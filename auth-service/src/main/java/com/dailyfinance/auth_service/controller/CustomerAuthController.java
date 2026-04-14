@@ -1,6 +1,7 @@
 package com.dailyfinance.auth_service.controller;
 
 import com.dailyfinance.auth_service.dto.request.CustomerRegisterRequest;
+import com.dailyfinance.auth_service.dto.request.VerifyOtpRequest;
 import com.dailyfinance.auth_service.dto.response.ApiResponse;
 import com.dailyfinance.auth_service.dto.response.RegisterResponse;
 import com.dailyfinance.auth_service.service.AuthService;
@@ -26,4 +27,5 @@ public class CustomerAuthController {
                 201
         );
     }
+
 }

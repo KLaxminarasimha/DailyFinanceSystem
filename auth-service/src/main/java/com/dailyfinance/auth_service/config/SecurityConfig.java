@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/agent/**").hasRole("AGENT")
                         .requestMatchers("/api/v1/customer/register").permitAll()
                         .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
-
+                        .requestMatchers("/api/v1/auth/verify-otp").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

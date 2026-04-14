@@ -7,11 +7,15 @@ import com.dailyfinance.auth_service.exception.*;
 import com.dailyfinance.auth_service.repository.*;
 import com.dailyfinance.auth_service.security.JwtUtil;
 import com.dailyfinance.auth_service.service.AuthService;
+import com.dailyfinance.auth_service.service.EmailService;
 import com.dailyfinance.auth_service.utils.AuditUtil;
+import com.dailyfinance.auth_service.utils.OtpUtil;
 import com.dailyfinance.auth_service.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final ValidationUtil validationUtil;
+    private final EmailService emailService;
 
     //REGISTER
     @Override
@@ -57,6 +62,9 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!user.isVerified()) {
+            throw new UnauthorizedException("Please verify your account");
+        }
 
         validationUtil.validateLogin(request);
         String token = jwtUtil.generateToken(
@@ -108,23 +116,23 @@ public class AuthServiceImpl implements AuthService {
             throw new ResourceAlreadyExistsException("Phone number already registered");
         }
 
+        String otp = OtpUtil.generateOtp();
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone())
-                .role(Role.CUSTOMER) // 🔥 AUTO SET
+                .role(Role.CUSTOMER)
+                .otp(otp)
+                .otpExpiry(LocalDateTime.now().plusMinutes(5))
+                .isVerified(false)
                 .build();
 
         userRepository.save(user);
 
-        auditLogRepository.save(
-                AuditLog.builder()
-                        .user(user)
-                        .action("REGISTER_CUSTOMER")
-                        .entity("USERS")
-                        .build()
-        );
+        //SEND EMAIL
+        emailService.sendOtp(user.getEmail(), otp);
 
         return RegisterResponse.builder()
                 .userId(user.getId())
@@ -134,5 +142,25 @@ public class AuthServiceImpl implements AuthService {
                 .role(user.getRole())
                 .createdAt(user.getCreatedAt())
                 .build();
+    }
+    @Override
+    public void verifyOtp(VerifyOtpRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!user.getOtp().equals(request.getOtp())) {
+            throw new BadRequestException("Invalid OTP");
+        }
+
+        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("OTP expired");
+        }
+
+        user.setVerified(true);
+        user.setOtp(null);
+        user.setOtpExpiry(null);
+
+        userRepository.save(user);
     }
 }

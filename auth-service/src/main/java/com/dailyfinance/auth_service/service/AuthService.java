@@ -4,6 +4,7 @@ package com.dailyfinance.auth_service.service;
 import com.dailyfinance.auth_service.dto.request.CustomerRegisterRequest;
 import com.dailyfinance.auth_service.dto.request.LoginRequest;
 import com.dailyfinance.auth_service.dto.request.RegisterRequest;
+import com.dailyfinance.auth_service.dto.request.VerifyOtpRequest;
 import com.dailyfinance.auth_service.dto.response.AuthResponse;
 import com.dailyfinance.auth_service.dto.response.RegisterResponse;
 import com.dailyfinance.auth_service.dto.response.VerifyResponse;
@@ -18,4 +19,6 @@ public interface AuthService {
     VerifyResponse verifyToken(String token);
 
     RegisterResponse registerCustomer(CustomerRegisterRequest request);
+
+    void verifyOtp(VerifyOtpRequest request);
 }

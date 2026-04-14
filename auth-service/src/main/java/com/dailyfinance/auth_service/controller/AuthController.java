@@ -60,4 +60,16 @@ public class AuthController {
                 200
         );
     }
+    @PostMapping("/verify-otp")
+    public ResponseEntity<ApiResponse<Object>> verifyOtp(
+            @RequestBody VerifyOtpRequest request) {
+
+        authService.verifyOtp(request);
+
+        return ResponseUtil.success(
+                null,
+                "OTP verified successfully",
+                200
+        );
+    }
 }

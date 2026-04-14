@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users",
@@ -46,6 +47,15 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Column(name = "is_verified")
+    private boolean isVerified = false;
+
+    @Column(name = "otp")
+    private String otp;
+
+    @Column(name = "otp_expiry")
+    private LocalDateTime otpExpiry;
+
     @PrePersist
     public void onCreate() {
         this.createdAt = Instant.now();
@@ -55,4 +65,6 @@ public class User {
     public void onUpdate() {
         this.updatedAt = Instant.now();
     }
+
+
 }
