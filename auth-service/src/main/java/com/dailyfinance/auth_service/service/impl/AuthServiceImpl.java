@@ -87,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
             String role = jwtUtil.extractRole(token);
 
             return VerifyResponse.builder()
-                    .userid(userId)
+                    .userId(userId)
                     .email(email)
                     .role(Role.valueOf(role))
                     .isValid(true)
@@ -96,5 +96,43 @@ public class AuthServiceImpl implements AuthService {
         } catch (Exception e) {
             throw new UnauthorizedException("Invalid or expired token");
         }
+    }
+    @Override
+    public RegisterResponse registerCustomer(CustomerRegisterRequest request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new ResourceAlreadyExistsException("Email already registered");
+        }
+
+        if (userRepository.existsByPhone(request.getPhone())) {
+            throw new ResourceAlreadyExistsException("Phone number already registered");
+        }
+
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phone(request.getPhone())
+                .role(Role.CUSTOMER) // 🔥 AUTO SET
+                .build();
+
+        userRepository.save(user);
+
+        auditLogRepository.save(
+                AuditLog.builder()
+                        .user(user)
+                        .action("REGISTER_CUSTOMER")
+                        .entity("USERS")
+                        .build()
+        );
+
+        return RegisterResponse.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .phone(user.getPhone())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

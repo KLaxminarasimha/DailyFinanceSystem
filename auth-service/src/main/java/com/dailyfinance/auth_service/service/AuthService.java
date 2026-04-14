@@ -1,6 +1,7 @@
 package com.dailyfinance.auth_service.service;
 
 
+import com.dailyfinance.auth_service.dto.request.CustomerRegisterRequest;
 import com.dailyfinance.auth_service.dto.request.LoginRequest;
 import com.dailyfinance.auth_service.dto.request.RegisterRequest;
 import com.dailyfinance.auth_service.dto.response.AuthResponse;
@@ -15,4 +16,6 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
 
     VerifyResponse verifyToken(String token);
+
+    RegisterResponse registerCustomer(CustomerRegisterRequest request);
 }

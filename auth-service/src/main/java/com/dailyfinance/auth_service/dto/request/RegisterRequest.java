@@ -1,10 +1,7 @@
 package com.dailyfinance.auth_service.dto.request;
 
 import com.dailyfinance.auth_service.entity.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -27,7 +24,7 @@ public class RegisterRequest {
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone must be 10 digits")
     private String phone;
 
-    @NotBlank(message = "Role is required")
+    @NotNull
     private Role role;
 
     private String agentArea;
