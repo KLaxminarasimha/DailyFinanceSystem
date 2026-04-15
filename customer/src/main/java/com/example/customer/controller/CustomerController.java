@@ -20,10 +20,10 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    //  CREATE CUSTOMER
-    @PostMapping
+    //  CREATE CUSTOMER (UPDATED FOR FILE UPLOAD)
+    @PostMapping(consumes = "multipart/form-data")
     public ApiResponse<CustomerResponse> createCustomer(
-            @Valid @RequestBody CreateCustomerRequest request) {
+            @Valid @ModelAttribute CreateCustomerRequest request) {
 
         CustomerResponse response = customerService.createCustomer(request);
 

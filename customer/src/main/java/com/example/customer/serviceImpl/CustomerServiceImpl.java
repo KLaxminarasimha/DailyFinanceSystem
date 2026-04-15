@@ -39,7 +39,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = CustomerMapper.toEntity(request);
 
-        // 🔥 FIX: Set customer inside each guarantor
         if (customer.getGuarantors() != null) {
             for (Guarantor g : customer.getGuarantors()) {
                 g.setCustomer(customer);

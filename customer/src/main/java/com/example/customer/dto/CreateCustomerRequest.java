@@ -3,6 +3,7 @@ package com.example.customer.dto;
 import jakarta.validation.constraints.*;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,5 +35,12 @@ public class CreateCustomerRequest {
         @Positive(message = "Income must be positive")
         private Double income;
 
-        private List<CreateGuarantorRequest> guarantors;
+//        // ✅ FILES (YOUR REQUIREMENT)
+//        private MultipartFile aadharFile;
+//        private MultipartFile panFile;
+//        private MultipartFile signature;
+//        private MultipartFile selfie;
+
+
+//        private List<CreateGuarantorRequest> guarantors;
 }

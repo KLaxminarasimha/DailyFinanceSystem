@@ -58,7 +58,7 @@ public class CustomerMapper {
                 guarantorResponses.add(GuarantorMapper.toResponse(g));
             }
 
-            response.setGuarantors(guarantorResponses);
+//            response.setGuarantors(guarantorResponses);
 //            response.setGuarantors(null);
         }
 

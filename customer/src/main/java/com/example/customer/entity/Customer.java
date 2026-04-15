@@ -39,7 +39,11 @@ public class Customer extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private KycStatus kycStatus = KycStatus.PENDING;
 
-
+    // ✅ NEW FILE FIELDS
+    private String aadharFile;
+    private String panFile;
+    private String signature;
+    private String selfie;
 
     //  RELATIONSHIP
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
