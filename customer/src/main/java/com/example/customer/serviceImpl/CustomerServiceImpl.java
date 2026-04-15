@@ -2,6 +2,7 @@ package com.example.customer.serviceImpl;
 
 import com.example.customer.dto.*;
 import com.example.customer.entity.Customer;
+import com.example.customer.entity.Guarantor;
 import com.example.customer.exception.DuplicateResourceException;
 import com.example.customer.exception.ResourceNotFoundException;
 import com.example.customer.mapper.CustomerMapper;
@@ -38,22 +39,41 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = CustomerMapper.toEntity(request);
 
+        // 🔥 FIX: Set customer inside each guarantor
+        if (customer.getGuarantors() != null) {
+            for (Guarantor g : customer.getGuarantors()) {
+                g.setCustomer(customer);
+            }
+        }
+
         Customer savedCustomer = customerRepository.save(customer);
 
         return CustomerMapper.toResponse(savedCustomer);
     }
 
-    //  GET ALL CUSTOMERS
-    @Override
-    @Transactional(readOnly = true)
-    public Page<CustomerResponse> getAllCustomers(int page, int size) {
+//    //  GET ALL CUSTOMERS
+//    @Override
+//    @Transactional(readOnly = true)
+//    public Page<CustomerResponse> getAllCustomers(int page, int size) {
+//
+//        Pageable pageable = PageRequest.of(page, size,
+//                Sort.by(Sort.Direction.DESC, "customerId"));
+//
+//        return customerRepository.findAll(pageable)
+//                .map(CustomerMapper::toResponse);
+////    }
 
-        Pageable pageable = PageRequest.of(page, size,
-                Sort.by(Sort.Direction.DESC, "customerId"));
+// ✅ GET ALL CUSTOMERS (FIXED)
+@Override
+@Transactional
+public Page<CustomerResponse> getAllCustomers(int page, int size) {
 
-        return customerRepository.findAll(pageable)
-                .map(CustomerMapper::toResponse);
-    }
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<Customer> customers = customerRepository.findAll(pageable);
+
+    return customers.map(CustomerMapper::toResponse);
+}
 
     //  GET CUSTOMER BY ID
     @Override

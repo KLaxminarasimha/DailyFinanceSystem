@@ -59,6 +59,7 @@ public class CustomerMapper {
             }
 
             response.setGuarantors(guarantorResponses);
+//            response.setGuarantors(null);
         }
 
         return response;

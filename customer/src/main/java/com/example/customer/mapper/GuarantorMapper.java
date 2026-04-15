@@ -6,6 +6,7 @@ import com.example.customer.entity.Guarantor;
 
 public class GuarantorMapper {
 
+    // ✅ DTO → ENTITY
     public static Guarantor toEntity(CreateGuarantorRequest request) {
 
         Guarantor g = new Guarantor();
@@ -18,6 +19,7 @@ public class GuarantorMapper {
         return g;
     }
 
+    // ✅ ENTITY → RESPONSE
     public static GuarantorResponse toResponse(Guarantor g) {
 
         GuarantorResponse response = new GuarantorResponse();
@@ -27,7 +29,14 @@ public class GuarantorMapper {
         response.setPhone(g.getPhone());
         response.setRelationship(g.getRelationship());
         response.setVerified(g.getVerified());
-        response.setCustomerId(g.getCustomerId());
+
+        //  FIX: Get customerId from relationship (NOT from field)
+        response.setCustomerId(
+                g.getCustomer() != null
+                        ? g.getCustomer().getCustomerId()
+                        : null
+        );
+
         response.setCreatedAt(g.getCreatedAt());
         response.setUpdatedAt(g.getUpdatedAt());
 
