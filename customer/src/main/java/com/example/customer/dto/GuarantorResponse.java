@@ -14,6 +14,6 @@ import java.time.LocalDateTime;
         private Boolean verified;
         private Long customerId;
         private LocalDateTime createdAt;
-        private LocalDateTime updatedAt; // 🔥 add this for completeness
+        private LocalDateTime updatedAt;
     }
 
