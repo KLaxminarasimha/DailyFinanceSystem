@@ -1,0 +1,17 @@
+package com.uniquehire.TransactionAndReport.util;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class DateUtil {
+
+    private static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    public static String format(LocalDateTime dateTime) {
+        return dateTime.format(DateTimeFormatter.ofPattern(FORMAT));
+    }
+
+    public static LocalDateTime now() {
+        return LocalDateTime.now();
+    }
+}
