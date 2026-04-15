@@ -1,4 +1,4 @@
-package com.dailyfinance.auth_service.security;
+package com.example.customer.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
