@@ -18,6 +18,7 @@ import com.uniquehire.plansmodule.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
     private final CustomerClient customerClient;
+    private final RestTemplate restTemplate;
+
+
 
     @Override
     public PlanResponse createPlan(CreatePlanRequest request) {
@@ -89,9 +93,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public EligibilityResponse getEligiblePlans(Long customerId) {
+        CustomerIncomeResponse incomeResponse= restTemplate.getForObject(""+customerId,CustomerIncomeResponse.class);
 
-        CustomerIncomeResponse customerIncomeResponse = customerClient.getCustomerIncome(customerId);
-        BigDecimal income = customerIncomeResponse.getIncome();
+        BigDecimal income = incomeResponse.getIncome();
 
         List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
 
