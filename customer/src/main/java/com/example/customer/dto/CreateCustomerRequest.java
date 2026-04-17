@@ -1,46 +1,40 @@
 package com.example.customer.dto;
 
+import com.example.customer.enums.Gender;
+import com.example.customer.enums.UserType;
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Data
 public class CreateCustomerRequest {
-        @NotBlank(message = "Name is required")
-        @Size(max = 100)
-        private String name;
 
-        @NotBlank(message = "Phone is required")
-        @Pattern(regexp = "\\d{10}", message = "Phone must be 10 digits")
-        private String phone;
+        @NotBlank(message = "First name is required")
+        @Size(max = 50)
+        private String firstName;
 
+        @NotBlank(message = "Last name is required")
+        @Size(max = 50)
+        private String lastName;
+
+        @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         private String email;
 
-        @Size(max = 500)
+        @NotBlank(message = "Address is required")
         private String address;
 
-        @NotBlank(message = "Aadhar is required")
-        @Pattern(regexp = "\\d{12}", message = "Aadhar must be 12 digits")
-        private String aadhar;
+        @NotBlank(message = "Pincode is required")
+        @Pattern(regexp = "\\d{6}", message = "Pincode must be 6 digits")
+        private String pincode;
 
-        @NotBlank(message = "PAN is required")
-        @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]", message = "Invalid PAN format")
-        private String pan;
+        @NotNull(message = "DOB is required")
+        private LocalDate dob;
 
-        @NotNull(message = "Income is required")
-        @Positive(message = "Income must be positive")
-        private Double income;
+        @NotNull(message = "Gender is required")
+        private Gender gender;
 
-//        // ✅ FILES (YOUR REQUIREMENT)
-//        private MultipartFile aadharFile;
-//        private MultipartFile panFile;
-//        private MultipartFile signature;
-//        private MultipartFile selfie;
-
-
-//        private List<CreateGuarantorRequest> guarantors;
+        @NotNull(message = "User type is required")
+        private UserType userType;
 }
