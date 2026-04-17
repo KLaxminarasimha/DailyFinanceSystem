@@ -48,6 +48,12 @@ public class Payment {
     @Column(length = 50)
     private String referenceId;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
+//    @Column(name = "is_deleted")
+//    private boolean isDeleted = false;
+
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL,orphanRemoval = false)
     private List<Fine> fines =new ArrayList<>();
 }

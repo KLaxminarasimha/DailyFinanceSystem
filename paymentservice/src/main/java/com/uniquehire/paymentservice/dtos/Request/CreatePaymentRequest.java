@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreatePaymentRequest {
-    @NotNull(message = "Paid amount is required")
+    @NotNull(message = "Loan id is requied")
     private Long loanId;
 
     @NotNull(message = "Paid amount is required")
