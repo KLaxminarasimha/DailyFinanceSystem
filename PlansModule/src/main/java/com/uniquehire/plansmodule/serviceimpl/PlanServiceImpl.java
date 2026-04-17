@@ -51,6 +51,7 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = Plan.builder()
                 .name(request.getName())
                 .totalAmount(request.getTotalAmount())
+                .givenAmount(request.getGivenAmount())
                 .advance(request.getAdvance())
                 .dailyEmi(request.getDailyEmi())
                 .days(request.getDays())
@@ -93,9 +94,11 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public EligibilityResponse getEligiblePlans(Long customerId) {
-        CustomerIncomeResponse incomeResponse= restTemplate.getForObject(""+customerId,CustomerIncomeResponse.class);
+//        CustomerIncomeResponse incomeResponse= restTemplate.getForObject(""+customerId,CustomerIncomeResponse.class);
 
-        BigDecimal income = incomeResponse.getIncome();
+//        BigDecimal income = incomeResponse.getIncome();
+
+        BigDecimal income = BigDecimal.valueOf(50000);
 
         List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
 
@@ -156,6 +159,7 @@ public class PlanServiceImpl implements PlanService {
                 .planId(plan.getPlanId())
                 .name(plan.getName().name())
                 .totalAmount(plan.getTotalAmount())
+                .givenAmount(plan.getGivenAmount())
                 .advance(plan.getAdvance())
                 .dailyEmi(plan.getDailyEmi())
                 .days(plan.getDays())

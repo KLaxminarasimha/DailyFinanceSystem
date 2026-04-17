@@ -46,7 +46,7 @@ public class CustomerClient {
     public CustomerIncomeResponse getCustomerIncome(Long customerId) {
         return CustomerIncomeResponse.builder()
                 .customerId(customerId)
-                .income(new BigDecimal("6000"))   // change this value for testing
+                .income(new BigDecimal("75000"))   // change this value for testing
                 .build();
     }
 }

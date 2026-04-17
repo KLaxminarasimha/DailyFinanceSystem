@@ -29,6 +29,9 @@ public class Plan {
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
+    @Column(name = "given_amount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal givenAmount;
+
     @Column(name = "advance", nullable = false, precision = 12, scale = 2)
     private BigDecimal advance;
 
