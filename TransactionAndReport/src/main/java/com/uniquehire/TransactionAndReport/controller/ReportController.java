@@ -5,30 +5,34 @@ import com.uniquehire.TransactionAndReport.service.ReportService;
 import com.uniquehire.TransactionAndReport.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/reports")
 public class ReportController {
+
     @Autowired
     private ReportService reportService;
 
     @GetMapping("/summary")
-    public ResponseEntity<?> getSummaryReport(){
-        ReportSummaryDto response = reportService.getSummaryReport();
+    public ResponseEntity<?> getSummaryReport(
+            @RequestParam(required = false) LocalDate fromDate,
+            @RequestParam(required = false) LocalDate toDate) {
 
-        return ResponseUtil.success(response, "Summary report fetched successfully");
+        ReportSummaryDto response = reportService.getSummaryReport(fromDate, toDate);
+        return ResponseUtil.success(response, "Summary report generated");
     }
 
     @GetMapping("/loans")
-    public ResponseEntity<?> getLoanReport(){
+    public ResponseEntity<?> getLoanReport() {
         Object response = reportService.getLoanReport();
         return ResponseUtil.success(response, "Loan report fetched successfully");
     }
+
     @GetMapping("/collections")
-    public ResponseEntity<?> getCollectionsReport(){
+    public ResponseEntity<?> getCollectionsReport() {
         Object response = reportService.getCollectionReport();
         return ResponseUtil.success(response, "Collections report fetched successfully");
     }
