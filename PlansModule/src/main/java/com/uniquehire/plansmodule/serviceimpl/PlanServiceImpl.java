@@ -98,7 +98,7 @@ public class PlanServiceImpl implements PlanService {
 
 //        BigDecimal income = incomeResponse.getIncome();
 
-        BigDecimal income = BigDecimal.valueOf(50000);
+        BigDecimal income = BigDecimal.valueOf(9999);
 
         List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
 
