@@ -7,9 +7,11 @@ import java.util.List;
 
 public interface GuarantorRepository extends JpaRepository<Guarantor, Long> {
 
+    List<Guarantor> findByCustomerCustomerId(Long customerId);
 
-        List<Guarantor> findByCustomerCustomerId(Long customerId);
+    boolean existsByPhoneAndCustomerCustomerId(String phone, Long customerId);
 
+    int countByCustomerCustomerId(Long customerId);
 
-        boolean existsByPhoneAndCustomerCustomerId(String phone, Long customerId);
+    boolean existsByEmailAndCustomerCustomerId(String email, Long customerId);
 }

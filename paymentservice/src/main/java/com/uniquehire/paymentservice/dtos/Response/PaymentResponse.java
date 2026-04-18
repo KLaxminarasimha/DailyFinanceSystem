@@ -27,6 +27,9 @@ public class PaymentResponse {
     private PaymentStatus status;
     private PaymentMethod paymentMethod;
     private String referenceId;
+    private BigDecimal enteredAmount;   // user entered
+    private Long overdueDays;           // late days
+    private String upiLink;             // UPI link
 //    private LocalDateTime createdAt;
 
 //    private List<FineResponse> fines;

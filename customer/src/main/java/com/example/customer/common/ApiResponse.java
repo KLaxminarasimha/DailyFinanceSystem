@@ -1,11 +1,12 @@
 package com.example.customer.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse<T> {
 
@@ -15,18 +16,36 @@ public class ApiResponse<T> {
     private LocalDateTime timestamp;
     private int statusCode;
 
-    //  success
+    // ✅ SUCCESS RESPONSE
     public static <T> ApiResponse<T> success(T data, String message, int statusCode) {
-        return new ApiResponse<>(true, message, data, LocalDateTime.now(), statusCode);
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .data(data)
+                .timestamp(LocalDateTime.now())
+                .statusCode(statusCode)
+                .build();
     }
 
-    // failure
+    // ✅ FAILURE RESPONSE (NO DATA)
     public static <T> ApiResponse<T> failure(String message, int statusCode) {
-        return new ApiResponse<>(false, message, null, LocalDateTime.now(), statusCode);
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .data(null)
+                .timestamp(LocalDateTime.now())
+                .statusCode(statusCode)
+                .build();
     }
 
-    // NEW METHOD
+    // ✅ FAILURE RESPONSE (WITH DATA)
     public static <T> ApiResponse<T> failure(String message, int statusCode, T data) {
-        return new ApiResponse<>(false, message, data, LocalDateTime.now(), statusCode);
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .data(data)
+                .timestamp(LocalDateTime.now())
+                .statusCode(statusCode)
+                .build();
     }
 }

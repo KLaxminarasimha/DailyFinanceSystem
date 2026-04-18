@@ -1,21 +1,29 @@
 package com.example.customer.dto;
 
+import com.example.customer.enums.Gender;
+import com.example.customer.enums.UserType; // ✅ ADD
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 public class UpdateCustomerRequest {
 
-    @Size(max = 100, message = "Name cannot exceed 100 characters")
-    private String name;
+    private String firstName;
+    private String lastName;
 
     @Email(message = "Invalid email format")
     private String email;
 
-    @Positive(message = "Income must be positive")
-    private Double income;
-
-    @Size(max = 500, message = "Address cannot exceed 500 characters")
     private String address;
+
+    private String pincode;
+
+    private LocalDate dob;
+
+    private Gender gender;
+
+    // 🔥 ADD THIS (FIXES ERROR)
+    private UserType userType;
 }

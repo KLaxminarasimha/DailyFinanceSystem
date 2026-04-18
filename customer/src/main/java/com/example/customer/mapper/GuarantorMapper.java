@@ -13,6 +13,7 @@ public class GuarantorMapper {
         g.setName(request.getName());
         g.setPhone(request.getPhone());
         g.setRelationship(request.getRelationship());
+        g.setEmail(request.getEmail());
         g.setVerified(false);
 
         return g;
@@ -26,8 +27,13 @@ public class GuarantorMapper {
         response.setName(g.getName());
         response.setPhone(g.getPhone());
         response.setRelationship(g.getRelationship());
+        response.setEmail(g.getEmail());
         response.setVerified(g.getVerified());
-        response.setCustomerId(g.getCustomerId());
+
+        response.setCustomerId(
+                g.getCustomer() != null ? g.getCustomer().getCustomerId() : null
+        );
+
         response.setCreatedAt(g.getCreatedAt());
         response.setUpdatedAt(g.getUpdatedAt());
 
