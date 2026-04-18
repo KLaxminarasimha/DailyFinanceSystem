@@ -1,57 +1,67 @@
-
 package com.example.customer.mapper;
 
-import com.example.customer.dto.*;
+import com.example.customer.dto.CreateCustomerRequest;
+import com.example.customer.dto.CustomerResponse;
+import com.example.customer.dto.GuarantorResponse;
 import com.example.customer.entity.Customer;
 import com.example.customer.entity.Guarantor;
+import com.example.customer.enums.KycStatus;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerMapper {
 
-    //  DTO → ENTITY
+    // ✅ DTO → ENTITY
     public static Customer toEntity(CreateCustomerRequest request) {
 
         Customer customer = new Customer();
 
-        customer.setName(request.getName());
-        customer.setPhone(request.getPhone());
+        customer.setFirstName(request.getFirstName());
+        customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
-        customer.setAadhar(request.getAadhar());
-        customer.setPan(request.getPan());
-        customer.setIncome(request.getIncome());
         customer.setAddress(request.getAddress());
+        customer.setPincode(request.getPincode());
+        customer.setDob(request.getDob());
+        customer.setGender(request.getGender());
 
-        if (request.getGuarantors() != null) {
-            List<Guarantor> guarantors = new ArrayList<>();
+        // 🔥 FIX: set from request (NOT null)
+        customer.setUserType(request.getUserType());
 
-            for (CreateGuarantorRequest g : request.getGuarantors()) {
-                guarantors.add(GuarantorMapper.toEntity(g));
-            }
+        // 🔥 Default values
+        customer.setKycStatus(KycStatus.PENDING);
 
-            customer.setGuarantors(guarantors);
-        }
+        // 🔥 Timestamps
+        customer.setCreatedAt(LocalDateTime.now());
+        customer.setUpdatedAt(LocalDateTime.now());
 
         return customer;
     }
 
-    //  ENTITY → RESPONSE
+    // ✅ ENTITY → RESPONSE
     public static CustomerResponse toResponse(Customer customer) {
 
         CustomerResponse response = new CustomerResponse();
 
         response.setCustomerId(customer.getCustomerId());
-        response.setName(customer.getName());
-        response.setPhone(customer.getPhone());
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
         response.setEmail(customer.getEmail());
         response.setAddress(customer.getAddress());
-        response.setIncome(customer.getIncome());
+        response.setPincode(customer.getPincode());
+        response.setDob(customer.getDob());
+        response.setGender(customer.getGender());
+
+        response.setUserType(customer.getUserType()); // ✅ important
         response.setKycStatus(customer.getKycStatus());
+
         response.setCreatedAt(customer.getCreatedAt());
         response.setUpdatedAt(customer.getUpdatedAt());
 
-        if (customer.getGuarantors() != null) {
+        // ✅ Map guarantors (optional)
+        if (customer.getGuarantors() != null && !customer.getGuarantors().isEmpty()) {
+
             List<GuarantorResponse> guarantorResponses = new ArrayList<>();
 
             for (Guarantor g : customer.getGuarantors()) {
