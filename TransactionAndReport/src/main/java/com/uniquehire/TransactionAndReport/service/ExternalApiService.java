@@ -1,7 +1,10 @@
 package com.uniquehire.TransactionAndReport.service;
 
-import com.uniquehire.TransactionAndReport.dto.*;
-import com.uniquehire.TransactionAndReport.dto.ExternalAgentDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalCustomerDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalLoanDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalPlanDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalAgentDto;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 package com.uniquehire.TransactionAndReport.serviceImplementation;
 
 import com.uniquehire.TransactionAndReport.dto.CollectionReportItemDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalAgentDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalCustomerDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalLoanDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalPaymentDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalPlanDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalAgentDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalCustomerDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalLoanDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalPlanDto;
 import com.uniquehire.TransactionAndReport.dto.LoanReportItemDto;
 import com.uniquehire.TransactionAndReport.dto.ReportSummaryDto;
 import com.uniquehire.TransactionAndReport.repository.TransactionRepository;

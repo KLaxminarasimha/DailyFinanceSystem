@@ -1,6 +1,5 @@
-package com.uniquehire.TransactionAndReport.dto;
+package com.uniquehire.TransactionAndReport.dto.External;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

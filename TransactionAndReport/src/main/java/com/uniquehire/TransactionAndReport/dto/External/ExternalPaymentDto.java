@@ -1,4 +1,4 @@
-package com.uniquehire.TransactionAndReport.dto;
+package com.uniquehire.TransactionAndReport.dto.External;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

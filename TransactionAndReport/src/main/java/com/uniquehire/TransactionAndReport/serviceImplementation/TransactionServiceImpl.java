@@ -1,7 +1,7 @@
 package com.uniquehire.TransactionAndReport.serviceImplementation;
 
-import com.uniquehire.TransactionAndReport.dto.ExternalLoanDto;
-import com.uniquehire.TransactionAndReport.dto.ExternalPaymentDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalLoanDto;
+import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
 import com.uniquehire.TransactionAndReport.dto.TransactionRequestDto;
 import com.uniquehire.TransactionAndReport.dto.TransactionResponseDto;
 import com.uniquehire.TransactionAndReport.entity.Transaction;

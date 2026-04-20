@@ -1,13 +1,13 @@
-package com.uniquehire.TransactionAndReport.dto;
+package com.uniquehire.TransactionAndReport.dto.External;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ExternalCustomerDto {
-    private Long customerId;
+@NoArgsConstructor
+public class ExternalPlanDto {
+    private Long planId;
     private String name;
 }
