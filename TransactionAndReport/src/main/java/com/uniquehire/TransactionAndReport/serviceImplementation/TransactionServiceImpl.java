@@ -5,6 +5,8 @@ import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
 import com.uniquehire.TransactionAndReport.dto.TransactionRequestDto;
 import com.uniquehire.TransactionAndReport.dto.TransactionResponseDto;
 import com.uniquehire.TransactionAndReport.entity.Transaction;
+import com.uniquehire.TransactionAndReport.exception.ResourceNotFoundException;
+import com.uniquehire.TransactionAndReport.exception.ValidationException;
 import com.uniquehire.TransactionAndReport.mapper.TransactionMapper;
 import com.uniquehire.TransactionAndReport.repository.TransactionRepository;
 import com.uniquehire.TransactionAndReport.service.ExternalApiService;
@@ -43,20 +45,20 @@ public class TransactionServiceImpl implements TransactionService {
             System.out.println("Payment response: " + payment);
 
             if (payment == null) {
-                throw new RuntimeException("Payment not found for paymentId: " + request.getPaymentId());
+                throw new ResourceNotFoundException("Payment not found for paymentId: " + request.getPaymentId());
             }
 
             System.out.println("Loan ID from payment: " + payment.getLoanId());
 
             if (payment.getLoanId() == null) {
-                throw new RuntimeException("Loan ID is null in payment for paymentId: " + request.getPaymentId());
+                throw new ValidationException("Loan ID not found in payment details for paymentId: " + request.getPaymentId());
             }
 
             ExternalLoanDto loan = externalApiService.getLoanById(payment.getLoanId());
             System.out.println("Loan response: " + loan);
 
             if (loan == null) {
-                throw new RuntimeException("Loan not found for loanId: " + payment.getLoanId());
+                throw new ResourceNotFoundException("Loan not found for loanId: " + payment.getLoanId());
             }
 
             Transaction transaction = new Transaction();
