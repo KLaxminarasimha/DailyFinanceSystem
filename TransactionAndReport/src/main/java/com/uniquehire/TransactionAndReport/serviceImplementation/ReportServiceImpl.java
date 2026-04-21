@@ -1,13 +1,9 @@
 package com.uniquehire.TransactionAndReport.serviceImplementation;
 
-import com.uniquehire.TransactionAndReport.dto.CollectionReportItemDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalAgentDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalCustomerDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalLoanDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalPlanDto;
-import com.uniquehire.TransactionAndReport.dto.LoanReportItemDto;
-import com.uniquehire.TransactionAndReport.dto.ReportSummaryDto;
+import com.uniquehire.TransactionAndReport.dto.*;
+import com.uniquehire.TransactionAndReport.dto.External.*;
+import com.uniquehire.TransactionAndReport.dto.Extra.*;
+import com.uniquehire.TransactionAndReport.enums.LoanStatus;
 import com.uniquehire.TransactionAndReport.repository.TransactionRepository;
 import com.uniquehire.TransactionAndReport.service.ExternalApiService;
 import com.uniquehire.TransactionAndReport.service.ReportService;
@@ -46,6 +42,295 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<CollectionReportItemDto> getCollectionReport() {
         return groupCollectionByAgent();
+    }
+
+    // =========================
+    // NEW ADD-ON REPORT METHODS
+    // =========================
+
+    @Override
+    public LoanDetailReportDto getLoanDetailReport(Long loanId) {
+        ExternalLoanDto loan = externalApiService.getLoanById(loanId);
+
+        if (loan == null) {
+            return new LoanDetailReportDto();
+        }
+
+        List<ExternalPaymentDto> allPayments = fetchPaymentsFromPaymentService();
+
+        BigDecimal totalEmiCollected = getTotalPaidAmountForLoan(loanId, allPayments);
+        BigDecimal totalFineCollected = getTotalFineAmountForLoan(loanId, allPayments);
+
+        BigDecimal disbursedAmount = getSafeAmount(loan.getGivenAmount());
+        BigDecimal remainingEmiAmount = disbursedAmount.subtract(totalEmiCollected);
+
+        if (remainingEmiAmount.compareTo(BigDecimal.ZERO) < 0) {
+            remainingEmiAmount = BigDecimal.ZERO;
+        }
+
+        long completedDays = getCompletedDaysFromStartDate(loan.getStartDate());
+        int totalLoanDays = getSafeLoanDays(loan.getDays());
+
+        String completedDaysText = completedDays + "/" + totalLoanDays;
+
+        LoanDetailReportDto response = new LoanDetailReportDto();
+        response.setLoanId(loan.getLoanId());
+        response.setCustomerName(getCustomerNameById(loan.getCustomerId()));
+        response.setAgentName(getAgentNameById(loan.getAgentId()));
+        response.setPlanName(getPlanNameByPlanId(loan.getPlanId()));
+        response.setLoanAmount(getSafeAmount(loan.getTotalAmount()));
+        response.setDisbursedAmount(disbursedAmount);
+        response.setEmiCollected(totalEmiCollected);
+        response.setFineCollected(totalFineCollected);
+        response.setRemainingEmi(remainingEmiAmount);
+        response.setDaysDone(completedDaysText);
+        response.setStatus(loan.getStatus());
+
+        return response;
+    }
+
+    @Override
+    public MissedPaymentAlertDto getMissedPaymentAlert(Long loanId) {
+        ExternalLoanDto loan = externalApiService.getLoanById(loanId);
+
+        if (loan == null) {
+            return new MissedPaymentAlertDto();
+        }
+
+        int missedDays = getSafeOverdueDays(loan.getOverduedays());
+        BigDecimal emiAmount = getSafeAmount(loan.getDailyEmi());
+        BigDecimal fineAmount = BigDecimal.valueOf(missedDays);
+        BigDecimal totalDueAmount = emiAmount.add(fineAmount);
+
+        MissedPaymentAlertDto response = new MissedPaymentAlertDto();
+        response.setLoanId(loan.getLoanId());
+        response.setMissedDays(missedDays);
+        response.setEmiAmount(emiAmount);
+        response.setFineAmount(fineAmount);
+        response.setTotalDue(totalDueAmount);
+
+        if (missedDays > 0) {
+            response.setStatus(LoanStatus.OVERDUE.name());
+        } else {
+            response.setStatus(loan.getStatus());
+        }
+
+        return response;
+    }
+
+    @Override
+    public DefaultWarningDto getDefaultWarningReport(Long loanId) {
+        ExternalLoanDto loan = externalApiService.getLoanById(loanId);
+
+        if (loan == null) {
+            return new DefaultWarningDto();
+        }
+
+        int missedDays = getSafeOverdueDays(loan.getOverduedays());
+        BigDecimal dailyEmiAmount = getSafeAmount(loan.getDailyEmi());
+        BigDecimal totalDueAmount = dailyEmiAmount.multiply(BigDecimal.valueOf(missedDays));
+
+        DefaultWarningDto response = new DefaultWarningDto();
+        response.setLoanId(loan.getLoanId());
+        response.setMissedDays(missedDays);
+        response.setTotalDue(totalDueAmount);
+
+        if (missedDays >= 5) {
+            response.setRiskMessage("Risk of DEFAULT");
+            response.setStatus("WARNING");
+        } else {
+            response.setRiskMessage("No default warning yet");
+            response.setStatus(loan.getStatus());
+        }
+
+        return response;
+    }
+
+    @Override
+    public DefaultWarningDto getLoanDefaultReport(Long loanId) {
+        ExternalLoanDto loan = externalApiService.getLoanById(loanId);
+
+        if (loan == null) {
+            return new DefaultWarningDto();
+        }
+
+        int missedDays = getSafeOverdueDays(loan.getOverduedays());
+        BigDecimal dailyEmiAmount = getSafeAmount(loan.getDailyEmi());
+        BigDecimal totalDueAmount = dailyEmiAmount.multiply(BigDecimal.valueOf(missedDays));
+
+        DefaultWarningDto response = new DefaultWarningDto();
+        response.setLoanId(loan.getLoanId());
+        response.setMissedDays(missedDays);
+        response.setTotalDue(totalDueAmount);
+
+        if (missedDays >= 10) {
+            response.setRiskMessage("Loan is in DEFAULT state");
+            response.setStatus(LoanStatus.DEFAULT.name());
+        } else {
+            response.setRiskMessage("Loan is not yet defaulted");
+            response.setStatus(loan.getStatus());
+        }
+
+        return response;
+    }
+
+    @Override
+    public LoanCompletedReportDto getLoanCompletedReport(Long loanId) {
+        ExternalLoanDto loan = externalApiService.getLoanById(loanId);
+
+        if (loan == null) {
+            return new LoanCompletedReportDto();
+        }
+
+        List<ExternalPaymentDto> allPayments = fetchPaymentsFromPaymentService();
+
+        BigDecimal totalPaidAmount = getTotalPaidAmountForLoan(loanId, allPayments);
+        BigDecimal totalFineAmount = getTotalFineAmountForLoan(loanId, allPayments);
+        BigDecimal profitAmount = getSafeAmount(loan.getAdvance()).add(totalFineAmount);
+
+        LoanCompletedReportDto response = new LoanCompletedReportDto();
+        response.setLoanId(loan.getLoanId());
+        response.setTotalDays(getSafeLoanDays(loan.getDays()));
+        response.setTotalPaid(totalPaidAmount);
+        response.setTotalFine(totalFineAmount);
+        response.setProfit(profitAmount);
+
+        if (LoanStatus.CLOSED.name().equalsIgnoreCase(loan.getStatus())) {
+            response.setStatus(LoanStatus.CLOSED.name());
+        } else {
+            response.setStatus(loan.getStatus());
+        }
+
+        return response;
+    }
+
+    @Override
+    public AdminDashboardDto getAdminDashboardReport() {
+        List<ExternalLoanDto> allLoans = fetchLoansFromLoanService();
+        List<ExternalPaymentDto> allPayments = fetchPaymentsFromPaymentService();
+
+        BigDecimal totalDisbursedAmount = BigDecimal.ZERO;
+        BigDecimal totalAdvanceProfit = BigDecimal.ZERO;
+        BigDecimal totalEmiCollected = BigDecimal.ZERO;
+        BigDecimal totalFineCollected = BigDecimal.ZERO;
+
+        int totalOverdueLoans = 0;
+        int totalDefaultLoans = 0;
+
+        for (ExternalLoanDto loan : allLoans) {
+            totalDisbursedAmount = totalDisbursedAmount.add(getSafeAmount(loan.getGivenAmount()));
+            totalAdvanceProfit = totalAdvanceProfit.add(getSafeAmount(loan.getAdvance()));
+
+            if (LoanStatus.OVERDUE.name().equalsIgnoreCase(loan.getStatus())) {
+                totalOverdueLoans++;
+            }
+
+            if (LoanStatus.DEFAULT.name().equalsIgnoreCase(loan.getStatus())) {
+                totalDefaultLoans++;
+            }
+        }
+
+        for (ExternalPaymentDto payment : allPayments) {
+            totalEmiCollected = totalEmiCollected.add(getSafeAmount(payment.getPaidAmount()));
+            totalFineCollected = totalFineCollected.add(getSafeAmount(payment.getFine()));
+        }
+
+        AdminDashboardDto response = new AdminDashboardDto();
+        response.setTotalLoans(allLoans.size());
+        response.setTotalDisbursed(totalDisbursedAmount);
+        response.setAdvanceProfit(totalAdvanceProfit);
+        response.setEmiCollected(totalEmiCollected);
+        response.setFineCollected(totalFineCollected);
+        response.setOverdueLoans(totalOverdueLoans);
+        response.setDefaultLoans(totalDefaultLoans);
+
+        return response;
+    }
+
+    @Override
+    public DailyCollectionReportDto getDailyCollectionReport(LocalDate date) {
+        List<ExternalPaymentDto> allPayments = fetchPaymentsFromPaymentService();
+
+        BigDecimal totalEmiCollected = BigDecimal.ZERO;
+        BigDecimal totalFineCollected = BigDecimal.ZERO;
+
+        for (ExternalPaymentDto payment : allPayments) {
+            if (payment.getPaymentDate() != null && payment.getPaymentDate().equals(date)) {
+                totalEmiCollected = totalEmiCollected.add(getSafeAmount(payment.getPaidAmount()));
+                totalFineCollected = totalFineCollected.add(getSafeAmount(payment.getFine()));
+            }
+        }
+
+        BigDecimal totalRevenue = totalEmiCollected.add(totalFineCollected);
+
+        DailyCollectionReportDto response = new DailyCollectionReportDto();
+        response.setDate(date);
+        response.setEmiCollected(totalEmiCollected);
+        response.setFineCollected(totalFineCollected);
+        response.setTotalRevenue(totalRevenue);
+
+        return response;
+    }
+
+
+
+    // =========================
+    // HELPER METHODS
+    // =========================
+
+    private BigDecimal getSafeAmount(BigDecimal amount) {
+        return amount != null ? amount : BigDecimal.ZERO;
+    }
+
+    private int getSafeOverdueDays(Integer overdueDays) {
+        return overdueDays != null ? overdueDays : 0;
+    }
+
+    private int getSafeLoanDays(Integer totalDays) {
+        return totalDays != null ? totalDays : 0;
+    }
+
+    private long getCompletedDaysFromStartDate(LocalDate startDate) {
+        if (startDate == null) {
+            return 0;
+        }
+
+        long days = LocalDate.now().toEpochDay() - startDate.toEpochDay();
+
+//        ChronoUnit.DAYS.between(date1, date2)
+//        “ChronoUnit(Java built-in class) helps find difference between two dates like days, months, years.”
+        if (days < 0) {
+            return 0;
+        }
+        return days;
+    }
+
+    private BigDecimal getTotalPaidAmountForLoan(Long loanId, List<ExternalPaymentDto> allPayments) {
+        BigDecimal totalPaidAmount = BigDecimal.ZERO;
+
+        for (ExternalPaymentDto payment : allPayments) {
+            if (payment.getLoanId() != null
+                    && payment.getLoanId().equals(loanId)
+                    && payment.getPaidAmount() != null) {
+                totalPaidAmount = totalPaidAmount.add(payment.getPaidAmount());
+            }
+        }
+
+        return totalPaidAmount;
+    }
+
+    private BigDecimal getTotalFineAmountForLoan(Long loanId, List<ExternalPaymentDto> allPayments) {
+        BigDecimal totalFineAmount = BigDecimal.ZERO;
+
+        for (ExternalPaymentDto payment : allPayments) {
+            if (payment.getLoanId() != null
+                    && payment.getLoanId().equals(loanId)
+                    && payment.getFine() != null) {
+                totalFineAmount = totalFineAmount.add(payment.getFine());
+            }
+        }
+
+        return totalFineAmount;
     }
 
     private List<ExternalLoanDto> fetchLoansFromLoanService() {
@@ -115,7 +400,15 @@ public class ReportServiceImpl implements ReportService {
         List<ExternalPaymentDto> payments = fetchPaymentsFromPaymentService();
         List<ExternalAgentDto> agents = fetchAgentsFromAgentService();
 
-        int totalLoans = loans.size();
+        if (fromDate == null) {
+            fromDate = LocalDate.now().withDayOfMonth(1);
+        }
+
+        if (toDate == null) {
+            toDate = LocalDate.now();
+        }
+
+        int totalLoans = 0;
         int activeLoans = 0;
         int closedLoans = 0;
         int defaultedLoans = 0;
@@ -129,15 +422,36 @@ public class ReportServiceImpl implements ReportService {
         BigDecimal totalFinesWaived = BigDecimal.ZERO;
 
         Long topAgentId = null;
-        String topAgentName = null;
+        String topAgentName = "N/A";
         BigDecimal topAgentCollection = BigDecimal.ZERO;
 
+        List<ExternalLoanDto> filteredLoans = new ArrayList<>();
+        List<ExternalPaymentDto> filteredPayments = new ArrayList<>();
+
         for (ExternalLoanDto loan : loans) {
-            if ("active".equalsIgnoreCase(loan.getStatus())) {
+            LocalDate loanStartDate = loan.getStartDate();
+
+            if (loanStartDate == null || (!loanStartDate.isBefore(fromDate) && !loanStartDate.isAfter(toDate))) {
+                filteredLoans.add(loan);
+            }
+        }
+
+        for (ExternalPaymentDto payment : payments) {
+            LocalDate paymentDate = payment.getPaymentDate();
+
+            if (paymentDate == null || (!paymentDate.isBefore(fromDate) && !paymentDate.isAfter(toDate))) {
+                filteredPayments.add(payment);
+            }
+        }
+
+        totalLoans = filteredLoans.size();
+
+        for (ExternalLoanDto loan : filteredLoans) {
+            if (LoanStatus.ACTIVE.name().equalsIgnoreCase(loan.getStatus())) {
                 activeLoans++;
-            } else if ("closed".equalsIgnoreCase(loan.getStatus())) {
+            } else if (LoanStatus.CLOSED.name().equalsIgnoreCase(loan.getStatus())) {
                 closedLoans++;
-            } else if ("defaulted".equalsIgnoreCase(loan.getStatus())) {
+            } else if (LoanStatus.DEFAULT.name().equalsIgnoreCase(loan.getStatus())) {
                 defaultedLoans++;
             }
 
@@ -154,7 +468,7 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        for (ExternalPaymentDto payment : payments) {
+        for (ExternalPaymentDto payment : filteredPayments) {
             if (payment.getPaidAmount() != null) {
                 totalCollected = totalCollected.add(payment.getPaidAmount());
             }
@@ -172,9 +486,9 @@ public class ReportServiceImpl implements ReportService {
         for (ExternalAgentDto agent : agents) {
             BigDecimal agentCollection = BigDecimal.ZERO;
 
-            for (ExternalLoanDto loan : loans) {
+            for (ExternalLoanDto loan : filteredLoans) {
                 if (loan.getAgentId() != null && loan.getAgentId().equals(agent.getAgentId())) {
-                    for (ExternalPaymentDto payment : payments) {
+                    for (ExternalPaymentDto payment : filteredPayments) {
                         if (payment.getLoanId() != null
                                 && payment.getLoanId().equals(loan.getLoanId())
                                 && payment.getPaidAmount() != null) {
@@ -191,59 +505,33 @@ public class ReportServiceImpl implements ReportService {
             }
         }
 
-        totalFinesWaived = BigDecimal.ZERO;
+        ReportSummaryDto dto = new ReportSummaryDto();
 
-        if (fromDate == null) {
-            fromDate = LocalDate.now().withDayOfMonth(1);
-        }
-        if (toDate == null) {
-            toDate = LocalDate.now();
-        }
-
-        ReportSummaryDto.DateRangeDto dateRange =
-                new ReportSummaryDto.DateRangeDto(fromDate, toDate);
-
-        ReportSummaryDto.SummarySectionDto summary =
-                new ReportSummaryDto.SummarySectionDto(
-                        totalLoans,
-                        activeLoans,
-                        closedLoans,
-                        defaultedLoans
-                );
-
-        ReportSummaryDto.CollectionsSectionDto collections =
-                new ReportSummaryDto.CollectionsSectionDto(
-                        totalCollected,
-                        pendingAmount,
-                        overdueAmount
-                );
-
-        ReportSummaryDto.FinesSectionDto fines =
-                new ReportSummaryDto.FinesSectionDto(
-                        totalFinesDue,
-                        totalFinesPaid,
-                        totalFinesWaived
-                );
-
-        ReportSummaryDto.TopPerformerDto topPerformer =
+        dto.setDateRange(new ReportSummaryDto.DateRangeDto(fromDate, toDate));
+        dto.setSummary(new ReportSummaryDto.SummarySectionDto(
+                totalLoans,
+                activeLoans,
+                closedLoans,
+                defaultedLoans
+        ));
+        dto.setCollections(new ReportSummaryDto.CollectionsSectionDto(
+                totalCollected,
+                pendingAmount,
+                overdueAmount
+        ));
+        dto.setFines(new ReportSummaryDto.FinesSectionDto(
+                totalFinesDue,
+                totalFinesPaid,
+                totalFinesWaived
+        ));
+        dto.setAgents(new ReportSummaryDto.AgentsSectionDto(
+                agents.size(),
                 new ReportSummaryDto.TopPerformerDto(
                         topAgentId,
                         topAgentName,
                         topAgentCollection
-                );
-
-        ReportSummaryDto.AgentsSectionDto agentsSection =
-                new ReportSummaryDto.AgentsSectionDto(
-                        agents.size(),
-                        topPerformer
-                );
-
-        ReportSummaryDto dto = new ReportSummaryDto();
-        dto.setDateRange(dateRange);
-        dto.setSummary(summary);
-        dto.setCollections(collections);
-        dto.setFines(fines);
-        dto.setAgents(agentsSection);
+                )
+        ));
         dto.setGeneratedAt(LocalDateTime.now());
 
         return dto;
@@ -264,11 +552,9 @@ public class ReportServiceImpl implements ReportService {
                 }
             }
 
-            BigDecimal givenAmount = loan.getGivenAmount() != null
-                    ? loan.getGivenAmount()
-                    : BigDecimal.ZERO;
-
+            BigDecimal givenAmount = defaultIfNull(loan.getGivenAmount());
             BigDecimal remainingAmount = givenAmount.subtract(amountPaid);
+
             if (remainingAmount.compareTo(BigDecimal.ZERO) < 0) {
                 remainingAmount = BigDecimal.ZERO;
             }
@@ -281,17 +567,13 @@ public class ReportServiceImpl implements ReportService {
                         .doubleValue();
             }
 
-            String agentName = getAgentNameById(loan.getAgentId());
-            String customerName = getCustomerNameById(loan.getCustomerId());
-            String planName = getPlanNameByPlanId(loan.getPlanId());
-
             LoanReportItemDto dto = new LoanReportItemDto();
             dto.setLoanId(loan.getLoanId());
             dto.setCustomerId(loan.getCustomerId());
-            dto.setCustomerName(customerName);
+            dto.setCustomerName(getCustomerNameById(loan.getCustomerId()));
             dto.setAgentId(loan.getAgentId());
-            dto.setAgentName(agentName);
-            dto.setPlanName(planName);
+            dto.setAgentName(getAgentNameById(loan.getAgentId()));
+            dto.setPlanName(getPlanNameByPlanId(loan.getPlanId()));
             dto.setTotalAmount(loan.getTotalAmount());
             dto.setAdvance(loan.getAdvance());
             dto.setGivenAmount(loan.getGivenAmount());
@@ -361,7 +643,13 @@ public class ReportServiceImpl implements ReportService {
                         .doubleValue();
             }
 
-            BigDecimal commissionEarned = amountCollected.multiply(BigDecimal.valueOf(0.025));
+            BigDecimal commissionRate = agent.getCommissionRate() != null
+                    ? agent.getCommissionRate()
+                    : BigDecimal.ZERO;
+
+            BigDecimal commissionEarned = amountCollected
+                    .multiply(commissionRate)
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
             CollectionReportItemDto dto = new CollectionReportItemDto();
             dto.setAgentId(agent.getAgentId());
@@ -379,5 +667,9 @@ public class ReportServiceImpl implements ReportService {
         }
 
         return reportList;
+    }
+
+    private BigDecimal defaultIfNull(BigDecimal value) {
+        return value != null ? value : BigDecimal.ZERO;
     }
 }

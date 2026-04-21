@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class MissedPaymentAlterDto {
+@NoArgsConstructor
+public class LoanCompletedReportDto {
     private Long loanId;
-    private Integer missedDays;
-    private BigDecimal eminAmount;
-    private BigDecimal fineAmount;
-    private BigDecimal totalDue;
+    private Integer totalDays;
+    private BigDecimal totalPaid;
+    private BigDecimal totalFine;
+    private BigDecimal profit;
     private String status;
 }

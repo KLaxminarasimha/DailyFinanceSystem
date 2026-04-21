@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class DefaultWarningDto {
+@AllArgsConstructor
+public class MissedPaymentAlertDto {
     private Long loanId;
     private Integer missedDays;
+    private BigDecimal emiAmount;
+    private BigDecimal fineAmount;
     private BigDecimal totalDue;
-    private String riskMessage;
     private String status;
 }
