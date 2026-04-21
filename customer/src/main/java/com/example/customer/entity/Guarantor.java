@@ -29,7 +29,6 @@ public class Guarantor extends BaseEntity {
     private Long customerId;
 
 
-
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

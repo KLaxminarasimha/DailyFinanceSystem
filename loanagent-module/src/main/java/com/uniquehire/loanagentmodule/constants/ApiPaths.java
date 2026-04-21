@@ -9,6 +9,6 @@ public final class ApiPaths {
 
     public static final String LOANS=BASE+"/loans";
 
-    public static final String AGENTS=BASE+"/agents";
+//    public static final String AGENTS=BASE+"/agents";
 
 }
