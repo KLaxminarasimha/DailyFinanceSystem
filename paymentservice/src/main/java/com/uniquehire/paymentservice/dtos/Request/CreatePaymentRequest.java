@@ -18,8 +18,8 @@ public class CreatePaymentRequest {
     @NotNull(message = "Loan id is requied")
     private Long loanId;
 
-    @NotNull(message = "Paid amount is required")
-    private BigDecimal paidAmount;
+    @NotNull(message = "Pay amount is required")
+    private BigDecimal payAmount;
 
     @NotNull(message = "Payment date is required")
     private LocalDate paymentDate;

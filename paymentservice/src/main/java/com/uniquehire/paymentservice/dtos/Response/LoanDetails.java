@@ -16,7 +16,7 @@ public class LoanDetails {
     private BigDecimal dailyEmi;
     private LocalDate startDate;
     private LocalDate endDate;
-    private BigDecimal amountPaid;
-    private BigDecimal totalFine;
-    private BigDecimal totalAmount;
+//    private BigDecimal amountPaid;
+//    private BigDecimal totalFine;
+//    private BigDecimal totalAmount;
 }
