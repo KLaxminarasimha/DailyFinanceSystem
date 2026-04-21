@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class KycStatusUpdateRequest {
 
-    @NotBlank
+    @NotBlank(message = "Status is required")
     private String status; // VERIFIED or REJECTED
 
     private String rejectionReason;

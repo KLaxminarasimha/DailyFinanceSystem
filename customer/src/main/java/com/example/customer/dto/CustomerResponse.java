@@ -25,6 +25,8 @@ public class CustomerResponse {
     private LocalDate dob;
     private Gender gender;
 
+    private String panNumber;
+
     // 🔥 ADD THIS (VERY IMPORTANT)
     private UserType userType;
 

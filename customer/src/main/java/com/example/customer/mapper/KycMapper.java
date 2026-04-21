@@ -11,12 +11,13 @@ public class KycMapper {
 
         KycDetails kyc = new KycDetails();
 
-        kyc.setAadhar(request.getAadhar());
-        kyc.setPan(request.getPan());
-        kyc.setPhone(request.getPhone());
+        // ✅ Clean + normalize data
+        kyc.setAadhar(request.getAadhar().trim());
+        kyc.setPanNumber(request.getPanNumber().toUpperCase().trim());
+        kyc.setPhone(request.getPhone().trim());
 
-        // 🔥 Default when submitted
-        kyc.setStatus(KycStatus.IN_PROGRESS);
+        // ✅ Default status
+        kyc.setStatus(KycStatus.PENDING);
 
         return kyc;
     }
@@ -27,12 +28,15 @@ public class KycMapper {
 
         res.setId(kyc.getId());
         res.setAadhar(kyc.getAadhar());
-        res.setPan(kyc.getPan());
+        res.setPanNumber(kyc.getPanNumber());
         res.setPhone(kyc.getPhone());
         res.setStatus(kyc.getStatus());
         res.setRejectionReason(kyc.getRejectionReason());
+
         res.setCustomerId(
-                kyc.getCustomer() != null ? kyc.getCustomer().getCustomerId() : null
+                kyc.getCustomer() != null
+                        ? kyc.getCustomer().getCustomerId()
+                        : null
         );
 
         return res;
