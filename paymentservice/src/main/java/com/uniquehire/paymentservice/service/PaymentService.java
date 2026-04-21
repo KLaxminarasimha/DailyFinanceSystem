@@ -18,5 +18,6 @@ public interface PaymentService {
 
     void deletePayment(Long paymentId);
 
-    void validatePaymentAmount(BigDecimal paidAmount, BigDecimal emiAmount);
+//    void validatePaymentAmount(BigDecimal paidAmount, BigDecimal emiAmount);
+   void validatePaymentAmount(BigDecimal paidAmount);
 }
