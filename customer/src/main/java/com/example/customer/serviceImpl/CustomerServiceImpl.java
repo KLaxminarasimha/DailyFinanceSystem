@@ -9,6 +9,7 @@ import com.example.customer.mapper.CustomerMapper;
 import com.example.customer.repository.CustomerRepository;
 import com.example.customer.service.CustomerService;
 
+import com.example.customer.service.EmailService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.*;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
+    private final EmailService emailService;
 
 
     private final CustomerRepository customerRepository;
@@ -52,8 +54,19 @@ public class CustomerServiceImpl implements CustomerService {
         // 🔥 Save
 
         Customer savedCustomer = customerRepository.save(customer);
+// ✅ SEND EMAIL (ADD THIS BLOCK)
+        String subject = "Customer Registration Successful";
 
+        String body = "Hello " + savedCustomer.getFirstName() + ",\n\n"
+                + "Your account has been created successfully.\n\n"
+                + "Customer ID: " + savedCustomer.getCustomerId() + "\n"
+                + "Thank you!";
 
+        emailService.sendEmail(
+                savedCustomer.getEmail(),
+                subject,
+                body
+        );
 
 // 🔥 Return response
         return CustomerMapper.toResponse(savedCustomer);
