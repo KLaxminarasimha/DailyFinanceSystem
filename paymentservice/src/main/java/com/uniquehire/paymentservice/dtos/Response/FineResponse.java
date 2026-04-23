@@ -15,7 +15,7 @@ public class FineResponse{
 
     private Long fineId;
     private Long loanId;
-    private Long paymentId;
+//    private Long paymentId;
     private BigDecimal fineAmount;
     private String reason;
     private LocalDate fineDate;

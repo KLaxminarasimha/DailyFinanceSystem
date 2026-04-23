@@ -6,7 +6,8 @@ import com.uniquehire.paymentservice.dtos.Request.UpdateFineStatusRequest;
 import com.uniquehire.paymentservice.dtos.Response.ApiResponse;
 import com.uniquehire.paymentservice.dtos.Response.FineResponse;
 import com.uniquehire.paymentservice.service.FineService;
-import com.uniquehire.paymentservice.utils.ResponseUtil;
+import com.uniquehire.paymentservice.enums.FineStatus;
+//import com.uniquehire.paymentservice.utils.PaymentUtils;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,70 +19,39 @@ import java.util.List;
 @RequestMapping("/fines")
 public class FineController {
 
-    private final FineService fineService;
+    private FineService fineService;
 
+    // Constructor injection (no Lombok)
     public FineController(FineService fineService) {
         this.fineService = fineService;
     }
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<FineResponse>> createFine(@Valid @RequestBody CreateFineRequest request) {
-        FineResponse response = fineService.createFine(request);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseUtil.success(
-                        MessageConstants.FINE_RECORDED_SUCCESS,
-                        response,
-                        HttpStatus.CREATED.value()
-                ));
-    }
-
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<FineResponse>>> getAllFines() {
-        List<FineResponse> response = fineService.getAllFines();
-        return ResponseEntity.ok(
-                ResponseUtil.success(
-                        MessageConstants.ALL_FINES_FETCHED_SUCCESS,
-                        response,
-                        HttpStatus.OK.value()
-                )
-        );
-    }
-
+    // ✅ GET: Get fines by loanId
     @GetMapping("/{loanId}")
-    public ResponseEntity<ApiResponse<List<FineResponse>>> getFinesByLoan(@PathVariable Long loanId) {
-        List<FineResponse> response = fineService.getFinesByLoan(loanId);
-        return ResponseEntity.ok(
-                ResponseUtil.success(
-                        MessageConstants.FINES_FETCHED_SUCCESS,
-                        response,
-                        HttpStatus.OK.value()
-                )
+    public ApiResponse<List<FineResponse>> getFines(@PathVariable Long loanId) {
+
+        List<FineResponse> fines = fineService.getFines(loanId);
+
+        return ApiResponse.success(
+                "Fines fetched successfully",
+                fines,
+                200
         );
     }
 
+    // ✅ PUT: Update fine status (pay / waive)
     @PutMapping("/{fineId}/status")
-    public ResponseEntity<ApiResponse<FineResponse>> updateFineStatus(@PathVariable Long fineId,
-                                                                      @Valid @RequestBody UpdateFineStatusRequest request) {
-        FineResponse response = fineService.updateFineStatus(fineId, request);
-        return ResponseEntity.ok(
-                ResponseUtil.success(
-                        MessageConstants.FINE_STATUS_UPDATED_SUCCESS,
-                        response,
-                        HttpStatus.OK.value()
-                )
+    public ApiResponse<FineResponse> updateFineStatus(
+            @PathVariable Long fineId,
+            @RequestBody UpdateFineStatusRequest request
+    ) {
+
+        FineResponse response = fineService.updateStatus(fineId, request);
+
+        return ApiResponse.success(
+                "Fine status updated successfully",
+                response,
+                200
         );
     }
-
-    @DeleteMapping("/{fineId}")
-    public ResponseEntity<ApiResponse<Object>> deleteFine(@PathVariable Long fineId) {
-        fineService.deleteFine(fineId);
-        return ResponseEntity.ok(
-                ResponseUtil.success(
-                       MessageConstants.FINE_DELETED_SUCCESS,
-                        null,
-                        HttpStatus.OK.value()
-                )
-        );
-    }
-
 }

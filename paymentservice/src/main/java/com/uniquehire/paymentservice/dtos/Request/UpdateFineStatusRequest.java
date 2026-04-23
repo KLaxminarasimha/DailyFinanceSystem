@@ -14,6 +14,6 @@ public class UpdateFineStatusRequest {
     @NotNull(message = "Fine status is requied")
     private FineStatus status;
 
+    @NotNull(message = "payment ID is required")
     private Long paymentId;
-
 }

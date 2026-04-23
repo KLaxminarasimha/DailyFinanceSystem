@@ -10,9 +10,7 @@ import java.util.List;
 public interface FineRepository extends JpaRepository<Fine,Long > {
     List<Fine> findByLoanId(Long loanId);//get all fines for loan
 
-    List<Fine> findByPaymentPaymentId(Long paymentId);// get all fines for a payment
-
-    List<Fine> findByStatus(FineStatus status);//Get fines by status
+    List<Fine> findByLoanIdAndStatus(Long loanId, FineStatus status);
 
 
 }
