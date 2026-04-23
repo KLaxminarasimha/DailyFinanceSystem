@@ -33,12 +33,19 @@
         </processorPath>
         <module name="customer" />
       </profile>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="api-gateway" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="LoanManagementSystem" options="-parameters" />
       <module name="PlansModule" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="customer" options="-parameters" />
       <module name="loanagent-module" options="-parameters" />
