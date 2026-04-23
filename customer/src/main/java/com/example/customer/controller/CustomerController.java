@@ -1,84 +1,50 @@
 package com.example.customer.controller;
 
-import com.example.customer.common.ApiResponse;
-import com.example.customer.common.constants.AppConstants;
-import com.example.customer.dto.CreateCustomerRequest;
-import com.example.customer.dto.CustomerResponse;
-import com.example.customer.dto.UpdateCustomerRequest;
+import com.example.customer.dto.CustomerDTO;
+import com.example.customer.entity.Customer;
 import com.example.customer.service.CustomerService;
-
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CustomerService service;
 
-    // ✅ CREATE CUSTOMER
-    @PostMapping
-    public ResponseEntity<ApiResponse<CustomerResponse>> createCustomer(
-            @Valid @RequestBody CreateCustomerRequest request) {
-
-        CustomerResponse response = customerService.createCustomer(request);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(response, AppConstants.CUSTOMER_CREATED, 200)
-        );
+    // CREATE
+    @PostMapping("/profile")
+    public Customer createCustomer(@RequestBody CustomerDTO dto,
+                                   @RequestHeader("X-USER-ID") Long authUserId) {
+        return service.createCustomer(dto, authUserId);
     }
 
-    // ✅ GET ALL CUSTOMERS
-    @GetMapping
-    public ResponseEntity<ApiResponse<Page<CustomerResponse>>> getAllCustomers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Page<CustomerResponse> response = customerService.getAllCustomers(page, size);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(response, AppConstants.CUSTOMER_FETCHED, 200)
-        );
-    }
-
-    // ✅ GET CUSTOMER BY ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> getCustomerById(
-            @PathVariable Long id) {
-
-        CustomerResponse response = customerService.getCustomerById(id);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(response, AppConstants.CUSTOMER_FETCHED, 200)
-        );
-    }
-
+    // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomerResponse>> updateCustomer(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateCustomerRequest request) {
-
-        CustomerResponse response = customerService.updateCustomer(id, request);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(response, AppConstants.CUSTOMER_UPDATED, 200)
-        );
+    public Customer updateCustomer(@PathVariable Long id,
+                                   @RequestBody CustomerDTO dto) {
+        return service.updateCustomer(id, dto);
     }
 
-    // ✅ DELETE CUSTOMER
+    // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomer(
-            @PathVariable Long id) {
+    public String deleteCustomer(@PathVariable Long id) {
+        service.deleteCustomer(id);
+        return "Customer deleted successfully";
+    }
 
-        customerService.deleteCustomer(id);
+    // GET BY ID
+    @GetMapping("/{id}")
+    public Customer getCustomerById(@PathVariable Long id) {
+        return service.getCustomerById(id);
+    }
 
-        return ResponseEntity.ok(
-                ApiResponse.success(null, AppConstants.CUSTOMER_DELETED, 200)
-        );
+    // GET ALL
+    @GetMapping
+    public List<Customer> getAllCustomers() {
+        return service.getAllCustomers();
     }
 }

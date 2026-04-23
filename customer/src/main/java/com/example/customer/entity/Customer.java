@@ -1,14 +1,10 @@
 package com.example.customer.entity;
 
-import com.example.customer.enums.Gender;
-import com.example.customer.enums.KycStatus;
 import com.example.customer.enums.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -19,35 +15,23 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    private Long id;
+
+    private Long authUserId;
 
     private String firstName;
     private String lastName;
-
-    @Column(unique = true)
     private String email;
-
-    private String address;
-    private String pincode;
+    private String phone;
 
     private LocalDate dob;
+    private String gender;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    @Column(name = "pan_number", nullable = false, unique = true)
-    private String panNumber;
-
-    @Enumerated(EnumType.STRING)
-    private KycStatus kycStatus;
+    private String address;
+    private String city;
+    private String state;
+    private String pincode;
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    // ✅ Optional (only if you want to fetch guarantors with customer)
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Guarantor> guarantors;
 }
