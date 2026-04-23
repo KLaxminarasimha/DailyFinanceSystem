@@ -1,0 +1,3 @@
+com\dailyfinance\auth_service\AuthServiceApplication.class
+com\dailyfinance\auth_service\security\JwtAuthFilter.class
+com\dailyfinance\auth_service\config\SecurityConfig.class

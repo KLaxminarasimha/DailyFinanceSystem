@@ -1,4 +1,3 @@
-
 package com.example.customer.controller;
 
 import com.example.customer.common.ApiResponse;
@@ -10,9 +9,9 @@ import com.example.customer.service.KycService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 @RestController
 @RequestMapping("/api/kyc")
@@ -27,26 +26,30 @@ public class KycController {
             @PathVariable Long customerId,
             @Valid @RequestBody KycVerificationRequest request) {
 
-        return ResponseEntity.ok(
+        KycResponse response = kycService.submitKyc(customerId, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse.success(
-                        kycService.submitKyc(customerId, request),
-                        AppConstants.KYC_SUBMITTED,   // ✅ FIX
-                        200
+                        response,
+                        AppConstants.KYC_SUBMITTED,
+                        HttpStatus.CREATED.value()
                 )
         );
     }
 
-    // ✅ VERIFY / REJECT
+    // ✅ VERIFY / REJECT KYC
     @PutMapping("/{customerId}/status")
     public ResponseEntity<ApiResponse<KycResponse>> updateKycStatus(
             @PathVariable Long customerId,
-            @Valid @RequestBody KycStatusUpdateRequest request) { // ✅ ADD @Valid
+            @Valid @RequestBody KycStatusUpdateRequest request) {
+
+        KycResponse response = kycService.updateKycStatus(customerId, request);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        kycService.updateKycStatus(customerId, request),
-                        AppConstants.KYC_UPDATED,     // ✅ FIX
-                        200
+                        response,
+                        AppConstants.KYC_UPDATED,
+                        HttpStatus.OK.value()
                 )
         );
     }

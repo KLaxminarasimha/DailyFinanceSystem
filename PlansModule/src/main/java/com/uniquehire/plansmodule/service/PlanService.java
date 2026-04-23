@@ -15,4 +15,9 @@ public interface PlanService {
     List<PlanResponse> getAllPlans(String status);
 
     EligibilityResponse getEligiblePlans(Long customerId);
+
+    PlanResponse selectEligiblePlan(Long customerId, Long planId);
+
+    PlanResponse getPlanById(Long planId);
+
 }

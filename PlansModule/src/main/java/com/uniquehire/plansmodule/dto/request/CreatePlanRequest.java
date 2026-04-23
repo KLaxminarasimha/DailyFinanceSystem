@@ -22,6 +22,10 @@ public class CreatePlanRequest {
     @DecimalMin(value = "0.01", message = "Total amount must be greater than 0")
     private BigDecimal totalAmount;
 
+    @NotNull(message = "Given amount is required")
+    @DecimalMin(value = "0.01", message = "Given amount must be greater than 0")
+    private BigDecimal givenAmount;
+
     @NotNull(message = "Advance is required")
     @DecimalMin(value = "0.00", message = "Advance must be greater than or equal to 0")
     private BigDecimal advance;

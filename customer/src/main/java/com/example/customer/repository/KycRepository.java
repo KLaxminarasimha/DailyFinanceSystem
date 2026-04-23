@@ -10,5 +10,10 @@ public interface KycRepository extends JpaRepository<KycDetails, Long> {
     Optional<KycDetails> findByCustomerCustomerId(Long customerId);
 
     boolean existsByAadhar(String aadhar);
-    boolean existsByPan(String pan);
+
+    // ✅ FIX: Case-insensitive PAN check
+    boolean existsByPanNumberIgnoreCase(String panNumber);
+
+    // ✅ NEW: Phone uniqueness
+    boolean existsByPhone(String phone);
 }

@@ -18,6 +18,10 @@ public class CreateGuarantorRequest {
     @Email(message = "Invalid email format")
     private String email;
 
+    @NotBlank(message = "PAN is required")
+    @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}", message = "Invalid PAN format")
+    private String panNumber;
+
     @NotBlank(message = "Relationship is required")
     @Size(max = 50)
     private String relationship;
