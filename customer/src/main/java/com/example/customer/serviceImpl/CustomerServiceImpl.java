@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 public class CustomerServiceImpl implements CustomerService {
 
 
+
     private final CustomerRepository customerRepository;
     private final ValidationUtil validationUtil;
 
@@ -52,7 +53,12 @@ public class CustomerServiceImpl implements CustomerService {
         // 🔥 Save
 
         Customer savedCustomer = customerRepository.save(customer);
+<<<<<<< HEAD
+// ✅ SEND EMAIL (ADD THIS BLOCK)
+        String subject = "Customer Registration Successful";
+=======
 
+>>>>>>> bae531b (Updated customer module and removed .idea files)
 
 
 // 🔥 Return response
