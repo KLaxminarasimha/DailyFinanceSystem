@@ -10,8 +10,6 @@ public interface LoanRepository extends JpaRepository<Loan,Long>{
 
     List<Loan> findByCustomerId(Long customerId);
 
-    List<Loan> findByAgentAgentId(Long agentId);
-
     List<Loan> findByStatus(LoanStatus status);
 
 }
