@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth-service" target="21" />
+      <module name="customer" target="21" />
+      <module name="loanagent-module" target="21" />
+      <module name="LoanManagementSystem" target="21" />
+      <module name="paymentservice" target="21" />
+      <module name="PlansModule" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

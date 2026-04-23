@@ -14,6 +14,7 @@ public class PlanResponse {
     private Long planId;
     private String name;
     private BigDecimal totalAmount;
+    private BigDecimal givenAmount;
     private BigDecimal advance;
     private BigDecimal dailyEmi;
     private Integer days;
