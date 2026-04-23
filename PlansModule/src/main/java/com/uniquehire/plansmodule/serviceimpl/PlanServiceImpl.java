@@ -18,6 +18,7 @@ import com.uniquehire.plansmodule.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,6 +33,9 @@ public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
     private final CustomerClient customerClient;
+    private final RestTemplate restTemplate;
+
+
 
     @Override
     public PlanResponse createPlan(CreatePlanRequest request) {
@@ -47,6 +51,7 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = Plan.builder()
                 .name(request.getName())
                 .totalAmount(request.getTotalAmount())
+                .givenAmount(request.getGivenAmount())
                 .advance(request.getAdvance())
                 .dailyEmi(request.getDailyEmi())
                 .days(request.getDays())
@@ -86,12 +91,52 @@ public class PlanServiceImpl implements PlanService {
 
         return responseList;
     }
+    @Override
+    public PlanResponse selectEligiblePlan(Long customerId, Long planId) {
+
+        CustomerIncomeResponse incomeResponse = restTemplate.getForObject("" + customerId, CustomerIncomeResponse.class);
+
+        if (incomeResponse == null || incomeResponse.getIncome() == null) {
+            throw new BadRequestException(PlanConstants.CUSTOMER_INCOME_NOT_FOUND);
+        }
+
+        BigDecimal income = incomeResponse.getIncome();
+
+        List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
+
+        Plan selectedPlan = planRepository.findByPlanId(planId)
+                .orElseThrow(() -> new BadRequestException(PlanConstants.PLAN_NOT_FOUND));
+
+        if (selectedPlan.getStatus() != PlanStatus.ACTIVE) {
+            throw new BadRequestException(PlanConstants.PLAN_NOT_ACTIVE);
+        }
+
+        if (!eligiblePlanTypes.contains(selectedPlan.getName())) {
+            throw new BadRequestException(PlanConstants.PLAN_NOT_ELIGIBLE);
+        }
+
+        log.info("Customer {} selected eligible plan {} successfully", customerId, planId);
+
+        return mapToResponse(selectedPlan);
+    }
+
+    @Override
+    public PlanResponse getPlanById(Long planId) {
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new BadRequestException(PlanConstants.PLAN_NOT_FOUND));
+
+        return mapToResponse(plan);
+    }
+
 
     @Override
     public EligibilityResponse getEligiblePlans(Long customerId) {
+        CustomerIncomeResponse incomeResponse= restTemplate.getForObject(""+customerId,CustomerIncomeResponse.class);
 
-        CustomerIncomeResponse customerIncomeResponse = customerClient.getCustomerIncome(customerId);
-        BigDecimal income = customerIncomeResponse.getIncome();
+        BigDecimal income = incomeResponse.getIncome();
+
+//        BigDecimal income = BigDecimal.valueOf(55000);
 
         List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
 
@@ -152,6 +197,7 @@ public class PlanServiceImpl implements PlanService {
                 .planId(plan.getPlanId())
                 .name(plan.getName().name())
                 .totalAmount(plan.getTotalAmount())
+                .givenAmount(plan.getGivenAmount())
                 .advance(plan.getAdvance())
                 .dailyEmi(plan.getDailyEmi())
                 .days(plan.getDays())

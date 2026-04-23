@@ -16,10 +16,12 @@ public class KycDetails {
     private Long id;
 
     private String aadhar;
-    private String pan;
+    @Column(name = "pan")
+    private String panNumber;
     private String phone;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private KycStatus status;   //  ADD THIS
 
     private String rejectionReason; //  OPTIONAL

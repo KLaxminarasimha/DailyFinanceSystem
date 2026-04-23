@@ -24,6 +24,8 @@ public class UpdateCustomerRequest {
 
     private Gender gender;
 
+    private String panNumber;
+
     // 🔥 ADD THIS (FIXES ERROR)
     private UserType userType;
 }

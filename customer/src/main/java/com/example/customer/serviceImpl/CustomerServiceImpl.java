@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
 
+
+
     private final CustomerRepository customerRepository;
     private final ValidationUtil validationUtil;
 
@@ -29,17 +31,38 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponse createCustomer(CreateCustomerRequest request) {
 
+        // 🔥 Normalize inputs
+        String email = request.getEmail() != null
+                ? request.getEmail().toLowerCase().trim()
+                : null;
+
+        String pan = request.getPanNumber() != null
+                ? request.getPanNumber().toUpperCase().trim()
+                : null;
+
         // 🔥 Validate uniqueness
-        validationUtil.validateCustomerUniqueness(request.getEmail());
+        validationUtil.validateCustomerUniqueness(email, pan);
 
         // 🔥 Map DTO → Entity
         Customer customer = CustomerMapper.toEntity(request);
 
+        // 🔥 Ensure normalized values are saved
+        customer.setEmail(email);
+        customer.setPanNumber(pan);
+
         // 🔥 Save
+
         Customer savedCustomer = customerRepository.save(customer);
 
-        // 🔥 Return response
+// ✅ SEND EMAIL (ADD THIS BLOCK)
+        String subject = "Customer Registration Successful";
+
+
+
+// 🔥 Return response
         return CustomerMapper.toResponse(savedCustomer);
+
+
     }
 
     // ✅ GET ALL CUSTOMERS (Pagination + Sorting)
@@ -50,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by("createdAt").descending() // 🔥 improvement
+                Sort.by("createdAt").descending()
         );
 
         Page<Customer> customers = customerRepository.findAll(pageable);
@@ -68,22 +91,39 @@ public class CustomerServiceImpl implements CustomerService {
         return CustomerMapper.toResponse(customer);
     }
 
-    // ✅ UPDATE CUSTOMER (FINAL CLEAN VERSION 🔥)
+    // ✅ UPDATE CUSTOMER
     @Override
     public CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request) {
 
         // 🔥 STEP 1: Get existing customer
         Customer customer = validationUtil.getCustomerOrThrow(id);
 
-        // 🔥 STEP 2: Email validation (case-insensitive)
-        if (request.getEmail() != null &&
-                !request.getEmail().equalsIgnoreCase(customer.getEmail())) {
+        // 🔥 Normalize inputs
+        String newEmail = request.getEmail() != null
+                ? request.getEmail().toLowerCase().trim()
+                : null;
 
-            validationUtil.validateCustomerUniqueness(request.getEmail());
-            customer.setEmail(request.getEmail());
+        String newPan = request.getPanNumber() != null
+                ? request.getPanNumber().toUpperCase().trim()
+                : null;
+
+        // 🔥 STEP 2: Email validation
+        if (newEmail != null &&
+                !newEmail.equals(customer.getEmail())) {
+
+            validationUtil.validateCustomerUniqueness(newEmail, null);
+            customer.setEmail(newEmail);
         }
 
-        // 🔥 STEP 3: Update fields safely
+        // 🔥 STEP 3: PAN validation
+        if (newPan != null &&
+                !newPan.equals(customer.getPanNumber())) {
+
+            validationUtil.validateCustomerUniqueness(null, newPan);
+            customer.setPanNumber(newPan);
+        }
+
+        // 🔥 STEP 4: Update other fields
         if (request.getFirstName() != null) {
             customer.setFirstName(request.getFirstName());
         }
@@ -108,15 +148,14 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setGender(request.getGender());
         }
 
-        // 🔥 NEW: update userType
         if (request.getUserType() != null) {
             customer.setUserType(request.getUserType());
         }
 
-        // 🔥 Always update timestamp
+        // 🔥 STEP 5: Update timestamp
         customer.setUpdatedAt(LocalDateTime.now());
 
-        // 🔥 Save updated entity
+        // 🔥 STEP 6: Save
         Customer updatedCustomer = customerRepository.save(customer);
 
         return CustomerMapper.toResponse(updatedCustomer);
