@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class LoanReportDto {
     @NotNull
-    private Long longId;
+    private Long loanId;
 
     @NotNull
     private Long customerId;
@@ -48,7 +48,7 @@ public class LoanReportDto {
     private LocalDate endDate;
 
     @NotNull
-    private LocalDate status;
+    private String status;
 
     @Min(0)
     private Integer overdueDays;
