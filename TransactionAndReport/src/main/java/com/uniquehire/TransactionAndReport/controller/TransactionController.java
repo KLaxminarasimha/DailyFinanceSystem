@@ -24,11 +24,10 @@ public class TransactionController {
         return ResponseUtil.success(response, "Transaction recorded successfully");
     }
 
-    @GetMapping("/payment")
+    @GetMapping("/{paymentId}")
     public ResponseEntity<?> getTransactionByPaymentId(
             @PathVariable Long paymentId){
         List<TransactionResponseDto> response = transactionService.getTransactionByPaymentId(paymentId);
-
         return ResponseUtil.success(response, "Transactions fetched successfully");
     }
 }
