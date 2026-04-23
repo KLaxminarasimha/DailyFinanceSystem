@@ -28,6 +28,7 @@ public class GuarantorResponse {
     private String relationship;
     private Boolean verified;
     private Long customerId;
+    private String panNumber;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

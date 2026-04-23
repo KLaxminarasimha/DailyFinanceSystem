@@ -35,6 +35,9 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "pan_number", nullable = false, unique = true)
+    private String panNumber;
+
     @Enumerated(EnumType.STRING)
     private KycStatus kycStatus;
 

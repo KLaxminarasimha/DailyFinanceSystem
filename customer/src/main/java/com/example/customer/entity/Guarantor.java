@@ -20,6 +20,8 @@ public class Guarantor {
     private String phone;
     private String relationship;
     private String email;
+    @Column(unique = true, nullable = false)
+    private String panNumber;
 
     private Boolean verified = false;
 
