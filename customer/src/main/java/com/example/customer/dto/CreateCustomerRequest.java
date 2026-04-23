@@ -2,6 +2,7 @@ package com.example.customer.dto;
 
 import com.example.customer.enums.Gender;
 import com.example.customer.enums.UserType;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -28,6 +29,10 @@ public class CreateCustomerRequest {
         @NotBlank(message = "Pincode is required")
         @Pattern(regexp = "\\d{6}", message = "Pincode must be 6 digits")
         private String pincode;
+
+        @NotBlank(message = "PAN is required")
+        @Pattern(regexp = "[A-Z]{5}[0-9]{4}[A-Z]{1}", message = "Invalid PAN format")
+        private String panNumber;
 
         @NotNull(message = "DOB is required")
         private LocalDate dob;

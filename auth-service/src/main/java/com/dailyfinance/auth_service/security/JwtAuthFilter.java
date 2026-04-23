@@ -25,42 +25,35 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Get request path
         String path = request.getServletPath();
 
-        // Skip AUTH APIs (VERY IMPORTANT)
+        // ✅ SKIP PUBLIC ENDPOINTS
         if (path.startsWith("/api/v1/auth") ||
-                path.equals("/api/v1/customer/register")) {
+                path.equals("/api/v1/customer/register") ||
+                path.startsWith("/actuator")) {   // 🔥 ADD THIS LINE
 
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Get Authorization header
         String header = request.getHeader("Authorization");
 
-        // If no token → block request
         if (header == null || !header.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Missing token");
             return;
         }
 
-        //  Extract token
         String token = header.replace("Bearer ", "");
 
         try {
-            // Validate token
             jwtUtil.validateToken(token);
 
-            // Extract role
             String role = jwtUtil.extractRole(token);
 
-            // Convert role → Spring format
             SimpleGrantedAuthority authority =
                     new SimpleGrantedAuthority("ROLE_" + role);
 
-            // Set authentication
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             null,
@@ -71,7 +64,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
-
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid or expired token");
             return;

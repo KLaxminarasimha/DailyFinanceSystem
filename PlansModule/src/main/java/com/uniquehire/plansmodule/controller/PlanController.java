@@ -3,6 +3,7 @@ package com.uniquehire.plansmodule.controller;
 
 import com.uniquehire.plansmodule.constants.PlanConstants;
 import com.uniquehire.plansmodule.dto.request.CreatePlanRequest;
+import com.uniquehire.plansmodule.dto.request.SelectPlanRequest;
 import com.uniquehire.plansmodule.dto.response.ApiResponse;
 import com.uniquehire.plansmodule.dto.response.EligibilityResponse;
 import com.uniquehire.plansmodule.dto.response.PlanResponse;
@@ -58,6 +59,34 @@ public class PlanController {
                 ApiResponse.<EligibilityResponse>builder()
                         .success(true)
                         .message(message)
+                        .data(response)
+                        .build()
+        );
+    }
+    @PostMapping("/select")
+    public ResponseEntity<ApiResponse<PlanResponse>> selectEligiblePlan(
+            @RequestBody @Valid SelectPlanRequest request) {
+
+        PlanResponse response =
+                planService.selectEligiblePlan(request.getCustomerId(), request.getPlanId());
+
+        return ResponseEntity.ok(
+                ApiResponse.<PlanResponse>builder()
+                        .success(true)
+                        .message("Plan selected successfully")
+                        .data(response)
+                        .build()
+        );
+    }
+    @GetMapping("/{planId}")
+    public ResponseEntity<ApiResponse<PlanResponse>> getPlanById(@PathVariable Long planId) {
+
+        PlanResponse response = planService.getPlanById(planId);
+
+        return ResponseEntity.ok(
+                ApiResponse.<PlanResponse>builder()
+                        .success(true)
+                        .message("Plan fetched successfully")
                         .data(response)
                         .build()
         );
