@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/auth-service-0.0.1-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/auth-service-0.0.1-SNAPSHOT.jar.original" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/surefire-reports/TEST-com.dailyfinance.auth_service.AuthServiceApplicationTests.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/surefire-reports/com.dailyfinance.auth_service.AuthServiceApplicationTests.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/target/test-classes/com/dailyfinance/auth_service/AuthServiceApplicationTests.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/customer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/CustomerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/CustomerServiceImpl.java" afterDir="false" />
-    </list>
+    <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -63,40 +44,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.AuthServiceApplication.executor": "Run",
-    "Application.CustomerApplication.executor": "Run",
-    "Application.LoanagentModuleApplication.executor": "Run",
-    "Application.PlansModuleApplication.executor": "Run",
-    "Maven.LoanManagementSystem [clean,install].executor": "Run",
-    "Maven.LoanManagementSystem [clean,package...].executor": "Run",
-    "Maven.PlansModule [clean,compile,install].executor": "Run",
-    "Maven.PlansModule [clean,compile].executor": "Run",
-    "Maven.auth-service [clean,compile,install].executor": "Run",
-    "Maven.customer [clean,compile,install].executor": "Run",
-    "Maven.loanagent-module [clean,compile,install].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.AuthServiceApplication.executor": "Run",
-    "Spring Boot.CustomerApplication.executor": "Run",
-    "Spring Boot.LoanagentModuleApplication.executor": "Run",
-    "Spring Boot.PlansModuleApplication.executor": "Run",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "loanagent-module",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/business system/DailyFinanceSystem",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
-    "to.speed.mode.migration.done": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AuthServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.CustomerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.LoanagentModuleApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.PlansModuleApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.LoanManagementSystem [clean,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.LoanManagementSystem [clean,package...].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.PlansModule [clean,compile,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.PlansModule [clean,compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.auth-service [clean,compile,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.customer [clean,compile,install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.loanagent-module [clean,compile,install].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AuthServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.CustomerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.LoanagentModuleApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.PlansModuleApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;loanagent-module&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/business system/DailyFinanceSystem&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.javacompiler&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Application.CustomerApplication">
     <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.dailyfinance.auth_service.AuthServiceApplication" />
