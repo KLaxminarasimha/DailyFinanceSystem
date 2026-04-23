@@ -1,28 +1,20 @@
 package com.uniquehire.TransactionAndReport.dto;
 
-import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiResponseDto<T>{
-    @NotNull
-    private Boolean success;
-
-    @NotBlank
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ApiWrapperDto<T> {
+    private boolean success;
     private String message;
-
-    @NotNull
-    private LocalDateTime timestamp;
-
     private T data;
-
-    @NotNull
+    private LocalDateTime timestamp;
     private Integer statusCode;
 }

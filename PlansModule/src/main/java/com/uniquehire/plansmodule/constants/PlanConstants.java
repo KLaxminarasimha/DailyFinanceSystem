@@ -14,4 +14,7 @@ public final class PlanConstants {
     public static final String INVALID_STATUS = "Invalid status. Allowed values: ACTIVE, INACTIVE";
     public static final String CUSTOMER_INCOME_NOT_FOUND = "Customer income not found";
     public static final String CUSTOMER_NOT_ELIGIBLE = "Customer is not eligible for any plan";
+    public static final String PLAN_NOT_FOUND = "Plan not found";
+    public static final String PLAN_NOT_ACTIVE = "Selected plan is not active";
+    public static final String PLAN_NOT_ELIGIBLE = "Customer is not eligible for the selected plan";
 }
