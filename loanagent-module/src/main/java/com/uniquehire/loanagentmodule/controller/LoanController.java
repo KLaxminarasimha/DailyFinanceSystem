@@ -27,7 +27,7 @@ public class LoanController {
     public ResponseEntity<ApiResponse<LoanResponseDTO>> createLoan(
             @Valid @RequestBody LoanRequestDTO request) {
 
-        LoanResponseDTO loan = loanService.createLoan(request);
+        LoanResponseDTO loan = loanService.createLoan(request.getCustomerId(),request.getPlanId());
 
         return ResponseUtil.success(loan, "Loan created successfully", HttpStatus.CREATED);
     }
@@ -61,5 +61,23 @@ public class LoanController {
         loanService.updateLoanStatus(loanId, status, remarks);
 
         return ResponseUtil.success("Status updated", "Loan status updated successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<ApiResponse<List<LoanResponseDTO>>> getLoansByCustomerId(
+            @PathVariable Long customerId) {
+
+        List<LoanResponseDTO> loans = loanService.getLoansByCustomerId(customerId);
+
+        return ResponseUtil.success(loans, "Customer loans retrieved", HttpStatus.OK);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<LoanResponseDTO>>> getLoansByStatus(
+            @PathVariable String status) {
+
+        List<LoanResponseDTO> loans = loanService.getLoansByStatus(status);
+
+        return ResponseUtil.success(loans, "Loans retrieved by status", HttpStatus.OK);
     }
 }

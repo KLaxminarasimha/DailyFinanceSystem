@@ -1,7 +1,6 @@
 package com.uniquehire.loanagentmodule.entity;
 
 import com.uniquehire.loanagentmodule.enums.LoanStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,13 +23,18 @@ public class Loan {
     @Column(nullable = false)
     private Long customerId;
 
+    private String customerName;
+
+
     @Column(nullable = false)
     private Long planId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id", nullable = false)
-    @JsonIgnore
-    private Agent agent;
+    private String planName;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "agent_id", nullable = false)
+//    @JsonIgnore
+//    private Agent agent;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
@@ -57,10 +61,10 @@ public class Loan {
     @Column(nullable = false)
     private LoanStatus status;
 
-    @Column(nullable = false)
-    private Integer overdueDays = 0;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalFine = BigDecimal.ZERO;
+//    @Column(nullable = false)
+//    private Integer overdueDays = 0;
+//
+//    @Column(nullable = false, precision = 10, scale = 2)
+//    private BigDecimal totalFine = BigDecimal.ZERO;
 
 }
