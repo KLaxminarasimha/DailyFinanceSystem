@@ -30,5 +30,10 @@ public class PaymentResponse {
     private int daysCovered;// if he pay extra amount then it will count days
     private LocalDate nextEmiDate;
 
-    private String status;
+    private PaymentStatus status;
+
+    private  LocalDate paymentDate;
+
+//    public static Object builder() {
+//    }
 }

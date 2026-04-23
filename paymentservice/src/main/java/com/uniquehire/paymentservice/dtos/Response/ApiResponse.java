@@ -15,26 +15,23 @@ public class ApiResponse<T> {
     private LocalDateTime timestamp;
     private int statusCode;
 
-//    // ✅ SUCCESS RESPONSE
-//    public static <T> ApiResponse<T> success(String message, T data, int statusCode) {
-//        return new ApiResponse<>(
-//                true,
-//                message,
-//                data,
-//                LocalDateTime.now(),
-//                statusCode
-//        );
-//    }
-//
-//    // ✅ ERROR RESPONSE (THIS WAS MISSING)
-//    public static <T> ApiResponse<T> error(String message, int statusCode) {
-//        return new ApiResponse<>(
-//                false,
-//                message,
-//                null,
-//                LocalDateTime.now(),
-//                statusCode
-//        );
-//    }
-
+    public static <T> ApiResponse<T> success(String message, T data, int statusCode) {
+        return new ApiResponse<>(
+                true,
+                message,
+                data,
+                LocalDateTime.now(),
+                statusCode
+        );
+    }
+    // Failure response
+    public static <T> ApiResponse<T> failure(String message, int statusCode) {
+        return new ApiResponse<>(
+                false,
+                message,
+                null,
+                LocalDateTime.now(),
+                statusCode
+        );
+    }
 }
