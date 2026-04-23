@@ -6,6 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/customer/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +79,7 @@
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.PlansModuleApplication">
+  <component name="RunManager" selected="Spring Boot.CustomerApplication">
     <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.dailyfinance.auth_service.AuthServiceApplication" />
       <module name="auth-service" />
@@ -138,11 +143,26 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+    <configuration name="CustomerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
+      <module name="customer" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.customer.CustomerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.customer.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.CustomerApplication" />
+        <item itemvalue="Application.CustomerApplication" />
         <item itemvalue="Application.PlansModuleApplication" />
         <item itemvalue="Application.LoanagentModuleApplication" />
-        <item itemvalue="Application.CustomerApplication" />
         <item itemvalue="Application.AuthServiceApplication" />
       </list>
     </recent_temporary>
