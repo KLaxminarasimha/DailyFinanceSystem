@@ -1,60 +1,73 @@
 package com.uniquehire.TransactionAndReport.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportSummaryDto {
-    @Min(0)
-    private Integer totalLoans;
-
-    @Min(0)
-    private Integer activeLoans;
-
-    @Min(0)
-    private Integer closedLoans;
-
-    @Min(0)
-    private Integer defaultedLoans;
-
-    @DecimalMin(value = "0.0")
-    private BigDecimal totalCollection;
-
-    @DecimalMin(value = "0.0")
-    private BigDecimal pendingAmount;
-
-    @DecimalMin(value = "0.0")
-    private BigDecimal overdueAmount;
-    @DecimalMin(value = "0.0")
-    private BigDecimal totalFineDue;
-
-    @DecimalMin(value= "0.0")
-    private BigDecimal totalFinesPaid;
-
-    @DecimalMin(value ="0.0")
-    private BigDecimal totalFinesWaived;
-
-    @Min(0)
-    private Integer totalAgents;
-
-    private Long topAgentId;
-
-    @Size(min = 2, max= 100)
-    private String topAgentName;
-
-    @DecimalMin(value = "0.0")
-    private BigDecimal topAgentCollection;
-
-    @NotNull
+    private DateRangeDto dateRange;
+    private SummarySectionDto summary;
+    private CollectionsSectionDto collections;
+    private FinesSectionDto fines;
+    private AgentsSectionDto agents;
     private LocalDateTime generatedAt;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class DateRangeDto {
+        private LocalDate from;
+        private LocalDate to;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class SummarySectionDto {
+        private Integer totalLoans;
+        private Integer activeLoans;
+        private Integer closedLoans;
+        private Integer defaultedLoans;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CollectionsSectionDto {
+        private java.math.BigDecimal totalCollected;
+        private java.math.BigDecimal pendingAmount;
+        private java.math.BigDecimal overdueAmount;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class FinesSectionDto {
+        private java.math.BigDecimal totalFinesDue;
+        private java.math.BigDecimal totalFinesPaid;
+        private java.math.BigDecimal totalFinesWaived;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AgentsSectionDto {
+        private Integer totalAgents;
+        private TopPerformerDto topPerformer;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TopPerformerDto {
+        private Long agentId;
+        private String agentName;
+        private java.math.BigDecimal collectionsAmount;
+    }
 }

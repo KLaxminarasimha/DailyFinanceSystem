@@ -34,8 +34,17 @@ public class Payment {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal paidAmount;
 
+    @Column(nullable = false,precision = 10,scale = 2)
+    private BigDecimal dueAmount;
+
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal fine;
+    private BigDecimal fineAmount;
+
+    @Column(nullable = false)
+    private int daysCovered;
+
+    @Column(nullable = false)
+    private LocalDate nextEmiDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,9 +54,8 @@ public class Payment {
     @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
-    @Column(length = 50)
-    private String referenceId;
+   private String upiId;
 
-    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL,orphanRemoval = false)
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
     private List<Fine> fines =new ArrayList<>();
 }
