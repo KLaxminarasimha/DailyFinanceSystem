@@ -26,7 +26,12 @@ public class CustomerMapper {
         customer.setDob(request.getDob());
         customer.setGender(request.getGender());
 
-        // 🔥 FIX: set from request (NOT null)
+        // 🔥 NEW: PAN (IMPORTANT)
+        customer.setPanNumber(
+                request.getPanNumber().toUpperCase().trim()
+        );
+
+        // 🔥 User type
         customer.setUserType(request.getUserType());
 
         // 🔥 Default values
@@ -53,14 +58,17 @@ public class CustomerMapper {
         response.setDob(customer.getDob());
         response.setGender(customer.getGender());
 
-        response.setUserType(customer.getUserType()); // ✅ important
+        // 🔥 NEW: include PAN in response (optional but recommended)
+        response.setPanNumber(customer.getPanNumber());
+
+        response.setUserType(customer.getUserType());
         response.setKycStatus(customer.getKycStatus());
 
         response.setCreatedAt(customer.getCreatedAt());
         response.setUpdatedAt(customer.getUpdatedAt());
 
-        // ✅ Map guarantors (optional)
-        if (customer.getGuarantors() != null && !customer.getGuarantors().isEmpty()) {
+        // ✅ Map guarantors
+        if (customer.getGuarantors() != null) {
 
             List<GuarantorResponse> guarantorResponses = new ArrayList<>();
 
@@ -69,6 +77,8 @@ public class CustomerMapper {
             }
 
             response.setGuarantors(guarantorResponses);
+        } else {
+            response.setGuarantors(new ArrayList<>()); // 🔥 avoid null
         }
 
         return response;

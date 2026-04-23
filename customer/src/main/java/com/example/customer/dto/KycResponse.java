@@ -8,7 +8,7 @@ public class KycResponse {
 
     private Long id;
     private String aadhar;
-    private String pan;
+    private String panNumber;
     private String phone;
     private KycStatus status;
     private String rejectionReason;
