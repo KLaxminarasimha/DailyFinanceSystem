@@ -51,6 +51,4 @@ public class AppConstants {
     public static final String GUARANTOR_EMAIL_EXISTS = "Guarantor email already exists";
     public static final String GUARANTOR_CREATED = "Guarantor added successfully";
     public static final String GUARANTOR_FETCHED = "Guarantors fetched successfully";
-
-
 }

@@ -19,18 +19,16 @@ public class PaymentResponse {
 
     private Long paymentId;
     private Long loanId;
-    private LocalDate paymentDate;
+
+//    private LocalDate paymentDate;
     private BigDecimal emiAmount;
     private BigDecimal paidAmount;
-    private BigDecimal fine;
-    private BigDecimal totalPaid;// because contract response shows it.
-    private PaymentStatus status;
-    private PaymentMethod paymentMethod;
-    private String referenceId;
-    private BigDecimal enteredAmount;   // user entered
-    private Long overdueDays;           // late days
-    private String upiLink;             // UPI link
-//    private LocalDateTime createdAt;
 
-//    private List<FineResponse> fines;
+    private BigDecimal dueAmount;
+    private BigDecimal fineAmount;
+
+    private int daysCovered;// if he pay extra amount then it will count days
+    private LocalDate nextEmiDate;
+
+    private String status;
 }

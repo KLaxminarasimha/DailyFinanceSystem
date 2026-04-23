@@ -30,44 +30,53 @@ public class GuarantorServiceImpl implements GuarantorService {
     @Override
     public GuarantorResponse addGuarantor(Long customerId, CreateGuarantorRequest request) {
 
-        // 🔥 Step 1: Get customer
+        // 🔥 STEP 1: Get customer
         Customer customer = validationUtil.getCustomerOrThrow(customerId);
 
-        // 🔥 Step 2: Count guarantors
+        // 🔥 STEP 2: Count existing guarantors
         int currentCount = guarantorRepository.countByCustomerCustomerId(customerId);
 
-        // 🔥 Step 3: Validate (UPDATED with email)
-        validationUtil.validateGuarantor(
-                request.getPhone(),
-                request.getEmail(), // ✅ ADD THIS
-                customerId,
-                currentCount
-        );
+        // 🔥 STEP 3: Normalize PAN
+        String pan = request.getPanNumber() != null
+                ? request.getPanNumber().toUpperCase().trim()
+                : null;
 
-        // 🔥 Step 4: Map
+        // 🔥 STEP 4: Validate
+        validationUtil.validateGuarantor(pan, customerId, currentCount);
+
+        // 🔥 STEP 5: Map DTO → Entity
         Guarantor guarantor = GuarantorMapper.toEntity(request);
+
+        // 🔥 Ensure normalized PAN is saved
+        guarantor.setPanNumber(pan);
+
+        // 🔥 Set relationship
         guarantor.setCustomer(customer);
 
-        // 🔥 Step 5: Audit fields
+        // 🔥 STEP 6: Audit fields
         guarantor.setCreatedAt(LocalDateTime.now());
         guarantor.setUpdatedAt(LocalDateTime.now());
 
-        // 🔥 Step 6: Save
-        guarantorRepository.save(guarantor);
+        // 🔥 STEP 7: Save
+        Guarantor savedGuarantor = guarantorRepository.save(guarantor);
 
-        return GuarantorMapper.toResponse(guarantor);
+        // 🔥 STEP 8: Return response
+        return GuarantorMapper.toResponse(savedGuarantor);
     }
 
-    // ✅ GET GUARANTORS
+    // ✅ GET GUARANTORS BY CUSTOMER (WITHOUT STREAMS)
     @Override
     @Transactional(readOnly = true)
     public List<GuarantorResponse> getGuarantorsByCustomer(Long customerId) {
 
+        // 🔥 Validate customer exists
         validationUtil.validateCustomerExists(customerId);
 
+        // 🔥 Fetch guarantors
         List<Guarantor> guarantors =
                 guarantorRepository.findByCustomerCustomerId(customerId);
 
+        // 🔥 Convert to response list
         List<GuarantorResponse> responseList = new ArrayList<>();
 
         for (Guarantor g : guarantors) {
