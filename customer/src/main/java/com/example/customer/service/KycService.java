@@ -1,15 +1,11 @@
-
 package com.example.customer.service;
 
-import com.example.customer.dto.KycResponse;
-import com.example.customer.dto.KycStatusUpdateRequest;
-import com.example.customer.dto.KycVerificationRequest;
+import com.example.customer.dto.KycDTO;
+import com.example.customer.entity.Kyc;
 
 public interface KycService {
 
+        Kyc submitKyc(Long customerId, KycDTO dto);
 
-        KycResponse submitKyc(Long customerId, KycVerificationRequest request);
-
-        KycResponse updateKycStatus(Long customerId, KycStatusUpdateRequest request);
-
+        String verifyOtp(Long customerId, String otp);
 }
