@@ -28,6 +28,7 @@ public class ResponseUtil {
 
         response.setSuccess(false);
         response.setMessage(message);
+        response.setData(null);
         response.setTimestamp(LocalDateTime.now());
         response.setStatusCode(status.value());
 

@@ -28,14 +28,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/api/v1/customer/register",
+                                "/api/v1/auth/verify-otp",
 
-                        // 🔥 ROLE BASED
+                                "/actuator/**"   // 🔥 ADD THIS LINE
+                        ).permitAll()
+
+                        // ROLE BASED
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/agent/**").hasRole("AGENT")
-                        .requestMatchers("/api/v1/customer/register").permitAll()
                         .requestMatchers("/api/v1/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers("/api/v1/auth/verify-otp").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

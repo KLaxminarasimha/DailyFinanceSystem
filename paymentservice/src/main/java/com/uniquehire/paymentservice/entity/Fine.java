@@ -33,7 +33,7 @@ public class Fine {
     private String reason;
 
     @Column(nullable = false)
-    private LocalDate fineDate;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
