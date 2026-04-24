@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.uniquehire.paymentservice.constants.MessageConstants.*;
+
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
@@ -31,8 +33,9 @@ public class PaymentController {
         PaymentResponse response = service.payEmi(loanId, req);
 
         return ApiResponse.success(
-                "Payment successful",
-                response,
+                PAYMENT_SUCCESS,
+//                response,
+                service.payEmi(loanId,req),
                 200
         );
     }
@@ -46,7 +49,7 @@ public class PaymentController {
         String message = service.sendOtp(paymentId, email);
 
         return ApiResponse.success(
-                message,
+                OTP_SENT,
                 null,
                 200
         );
@@ -60,8 +63,9 @@ public class PaymentController {
         PaymentResponse response = service.verifyOtp(req);
 
         return ApiResponse.success(
-                "OTP verified successfully",
-                response,
+                OTP_VERIFIED,
+//                response,
+                service.verifyOtp(req),
                 200
         );
     }
@@ -74,8 +78,9 @@ public class PaymentController {
         PaymentResponse response = service.payDue(req);
 
         return ApiResponse.success(
-                "Due payment successful",
-                response,
+                DUE_PAYMENT_SUCCESS,
+                service.payDue(req),
+//                response,
                 200
         );
     }
@@ -88,8 +93,9 @@ public class PaymentController {
         List<PaymentResponse> payments = service.getPayments(loanId);
 
         return ApiResponse.success(
-                "Payments retrieved successfully",
-                payments,
+                PAYMENT_LIST,
+//                payments,
+                service.getPayments(loanId),
                 200
         );
     }

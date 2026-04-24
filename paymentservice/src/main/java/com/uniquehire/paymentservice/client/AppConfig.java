@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
         @Bean
         public RestTemplate restTemplate() {
+
             return new RestTemplate();
         }
 }

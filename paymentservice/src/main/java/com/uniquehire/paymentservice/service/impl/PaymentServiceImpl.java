@@ -1,6 +1,7 @@
 package com.uniquehire.paymentservice.service.impl;
 
 import com.uniquehire.paymentservice.dtos.Request.*;
+import com.uniquehire.paymentservice.dtos.Response.ApiResponse;
 import com.uniquehire.paymentservice.dtos.Response.PaymentResponse;
 import com.uniquehire.paymentservice.entity.Fine;
 import com.uniquehire.paymentservice.entity.Payment;
@@ -13,11 +14,15 @@ import com.uniquehire.paymentservice.utils.OtpUtil;
 import com.uniquehire.paymentservice.utils.PaymentCalculationUtil;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +31,30 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final FineRepository fineRepository;
     private final OtpUtil otpUtil;
+    private final RestTemplate restTemplate;
+
+    @Value("${loan.service.base-url}")
+    private String loanServiceUrl;
+
+    private BigDecimal getLoanAmount(Long loanId) {
+
+        String url = loanServiceUrl + "/" + loanId;
+
+        ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+
+        if (response == null || !response.isSuccess()) {
+            throw new RuntimeException("Loan not found");
+        }
+
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+
+        return new BigDecimal(data.get("totalAmount").toString());
+    }
 
     // 🔹 Dummy loan data (replace with LoanService later)
-    private BigDecimal getLoanAmount(Long loanId) {
-        return BigDecimal.valueOf(10000);
-    }
+//    private BigDecimal getLoanAmount(Long loanId) {
+//        return BigDecimal.valueOf(10000);
+//    }
 
     // ✅ PAY EMI
     @Override
