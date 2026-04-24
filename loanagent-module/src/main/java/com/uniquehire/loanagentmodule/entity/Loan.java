@@ -1,6 +1,5 @@
 package com.uniquehire.loanagentmodule.entity;
 
-import com.uniquehire.loanagentmodule.enums.LoanStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,8 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "loans")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,51 +18,19 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long loanId;
 
-    @Column(nullable = false)
     private Long customerId;
-
-    private String customerName;
-
-
-    @Column(nullable = false)
     private Long planId;
 
-    private String planName;
+    private BigDecimal planAmount;
+    private BigDecimal disbursedAmount;
+    private BigDecimal remainingAmount;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "agent_id", nullable = false)
-//    @JsonIgnore
-//    private Agent agent;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalAmount;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal advance;
-
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal givenAmount;
-
-    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyEmi;
 
-    @Column(nullable = false)
-    private Integer days;
+    private Integer totalDays;
+    private Integer remainingDays;
 
-    @Column(nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
-    private LocalDate endDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LoanStatus status;
-
-//    @Column(nullable = false)
-//    private Integer overdueDays = 0;
-//
-//    @Column(nullable = false, precision = 10, scale = 2)
-//    private BigDecimal totalFine = BigDecimal.ZERO;
-
+    private String status; // ACTIVE, CLOSED
 }
