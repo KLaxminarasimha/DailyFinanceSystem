@@ -1,17 +1,14 @@
 package com.uniquehire.plansmodule;
 
-import com.uniquehire.plansmodule.config.CustomerServiceProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
-@EnableConfigurationProperties(CustomerServiceProperties.class)
-
+@EnableDiscoveryClient
 public class PlansModuleApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(PlansModuleApplication.class, args);
     }
-
 }

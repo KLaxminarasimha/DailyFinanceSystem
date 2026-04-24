@@ -1,7 +1,6 @@
 package com.uniquehire.plansmodule.repository;
 
 
-import com.uniquehire.plansmodule.dto.response.PlanResponse;
 import com.uniquehire.plansmodule.entity.Plan;
 import com.uniquehire.plansmodule.enums.PlanStatus;
 import com.uniquehire.plansmodule.enums.PlanType;
