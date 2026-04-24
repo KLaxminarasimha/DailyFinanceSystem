@@ -5,62 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerDetailsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/KycDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/OtpDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/BusinessRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/EmployeeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/BusinessDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmailServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmployeeDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/KycServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/CustomerResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/entity/CompanyFund.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/repository/CompanyFundRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/common/ApiResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/customer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/common/validation/ValidationUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/BusinessDetailsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/PlansModuleApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/PlansModuleApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/client/CustomerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/config/CustomerServiceProperties.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/config/RestTemplateConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/config/RestTemplateConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/controller/PlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/controller/PlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/request/CreatePlanRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/request/SelectPlanRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/response/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/ApiResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/response/CustomerIncomeResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/response/EligibilityResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/response/PlanResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/PlanResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/entity/Plan.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/entity/Plan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/enums/EligibilitySlab.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/enums/PlanType.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/enums/PlanType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/repository/PlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/repository/PlanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/service/PlanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/service/PlanService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/serviceimpl/PlanServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/serviceimpl/PlanServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/data.sql" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/EmployeeDetailsController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/GuarantorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/KycController.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/KycController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDetailsRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CreateCustomerRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CreateGuarantorRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDetailsRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/KycDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Kyc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/BusinessDetailsMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/CustomerMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/EmployeeDetailsMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/GuarantorMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/KycMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/BusinessDetailsRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/EmployeeDetailsRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/GuarantorRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/KycRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/KycRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/BusinessDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/BusinessDetailsService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmployeeDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmployeeDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/GuarantorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/GuarantorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/KycService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/KycService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/BusinessDetailsServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/CustomerServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/EmployeeDetailsServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/GuarantorServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/KycServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

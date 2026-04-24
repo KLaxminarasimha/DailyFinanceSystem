@@ -1,6 +1,5 @@
 package com.uniquehire.plansmodule.entity;
 
-
 import com.uniquehire.plansmodule.enums.PlanStatus;
 import com.uniquehire.plansmodule.enums.PlanType;
 import jakarta.persistence.*;
@@ -19,33 +18,22 @@ public class Plan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "plan_id")
     private Long planId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name", nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true)
     private PlanType name;
 
-    @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal totalAmount;
+    // ✅ Base value only
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal planAmount;
 
-    @Column(name = "given_amount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal givenAmount;
-
-    @Column(name = "advance", nullable = false, precision = 12, scale = 2)
-    private BigDecimal advance;
-
-    @Column(name = "daily_emi", nullable = false, precision = 10, scale = 2)
-    private BigDecimal dailyEmi;
-
-    @Column(name = "days", nullable = false)
-    private Integer days;
+    @Column(nullable = false)
+    private Integer durationDays;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private PlanStatus status;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
