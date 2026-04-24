@@ -1,208 +1,113 @@
 package com.uniquehire.plansmodule.serviceimpl;
 
-
-
-import com.uniquehire.plansmodule.client.CustomerClient;
-import com.uniquehire.plansmodule.constants.PlanConstants;
-import com.uniquehire.plansmodule.dto.request.CreatePlanRequest;
-import com.uniquehire.plansmodule.dto.response.CustomerIncomeResponse;
-import com.uniquehire.plansmodule.dto.response.EligibilityResponse;
-import com.uniquehire.plansmodule.dto.response.PlanResponse;
+import com.uniquehire.plansmodule.dto.CustomerResponse;
+import com.uniquehire.plansmodule.dto.PlanResponse;
+import com.uniquehire.plansmodule.entity.CompanyFund;
 import com.uniquehire.plansmodule.entity.Plan;
 import com.uniquehire.plansmodule.enums.PlanStatus;
-import com.uniquehire.plansmodule.enums.PlanType;
-import com.uniquehire.plansmodule.exception.BadRequestException;
-import com.uniquehire.plansmodule.exception.DuplicateResourceException;
+import com.uniquehire.plansmodule.repository.CompanyFundRepository;
 import com.uniquehire.plansmodule.repository.PlanRepository;
 import com.uniquehire.plansmodule.service.PlanService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
-    private final CustomerClient customerClient;
+    private final CompanyFundRepository fundRepository;
     private final RestTemplate restTemplate;
 
-
-
     @Override
-    public PlanResponse createPlan(CreatePlanRequest request) {
+    public List<PlanResponse> getEligiblePlans(Long customerId) {
 
-        if (planRepository.existsByName(request.getName())) {
-            throw new DuplicateResourceException(PlanConstants.PLAN_ALREADY_EXISTS);
+        // 🔹 1. Call customer-service
+        String url = "http://customer-service/customers/" + customerId;
+
+        CustomerResponse customer =
+                restTemplate.getForObject(url, CustomerResponse.class);
+
+        BigDecimal income = getIncome(customer);
+        System.out.println("Income = " + income);
+
+        if (income == null) {
+            throw new RuntimeException("Income is null");
         }
 
-        if (request.getAdvance().compareTo(request.getTotalAmount()) >= 0) {
-            throw new BadRequestException(PlanConstants.INVALID_ADVANCE);
-        }
+        // 🔹 2. Get company fund
+        CompanyFund fund = fundRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Fund not found"));
 
-        Plan plan = Plan.builder()
-                .name(request.getName())
-                .totalAmount(request.getTotalAmount())
-                .givenAmount(request.getGivenAmount())
-                .advance(request.getAdvance())
-                .dailyEmi(request.getDailyEmi())
-                .days(request.getDays())
-                .status(request.getStatus())
-                .build();
+        BigDecimal fundBalance = fund.getBalance();
 
-        Plan savedPlan = planRepository.save(plan);
+        // 🔹 3. Get ACTIVE plans
+        List<Plan> plans = planRepository.findByStatus(PlanStatus.ACTIVE);
 
-        log.info("Plan created successfully with id: {}", savedPlan.getPlanId());
-
-        return mapToResponse(savedPlan);
+        // 🔹 4. Map to response
+        return plans.stream()
+                .filter(p -> p.getPlanAmount().compareTo(income) <= 0)
+                .map(p -> mapToResponse(p, fundBalance))
+                .toList();
     }
 
-    @Override
-    public List<PlanResponse> getAllPlans(String status) {
+    // 🔥 Extract income
+    private BigDecimal getIncome(CustomerResponse customer) {
 
-        List<Plan> plans;
+        if (customer == null) {
+            throw new RuntimeException("Customer is null");
+        }
 
-        if (status == null || status.isBlank()) {
-            plans = planRepository.findAll();
+        if ("EMPLOYEE".equalsIgnoreCase(customer.getUserType())) {
+
+            if (customer.getEmployeeDetails() != null &&
+                    customer.getEmployeeDetails().getMonthlySalary() != null) {
+
+                return customer.getEmployeeDetails().getMonthlySalary();
+            }
+
+        } else if ("BUSINESS".equalsIgnoreCase(customer.getUserType())) {
+
+            if (customer.getBusinessDetails() != null &&
+                    customer.getBusinessDetails().getMonthlyIncome() != null) {
+
+                return customer.getBusinessDetails().getMonthlyIncome();
+            }
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    // 🔥 Mapping logic
+    private PlanResponse mapToResponse(Plan plan, BigDecimal fundBalance) {
+
+        BigDecimal planAmount = plan.getPlanAmount();
+
+        BigDecimal disbursed = planAmount.multiply(BigDecimal.valueOf(0.9));
+        BigDecimal interest = planAmount.multiply(BigDecimal.valueOf(0.1));
+        BigDecimal dailyEmi = planAmount.multiply(BigDecimal.valueOf(0.01));
+
+        PlanResponse response = new PlanResponse();
+
+        response.setPlanId(plan.getPlanId());
+        response.setPlanAmount(planAmount);
+        response.setDisbursedAmount(disbursed);
+        response.setInterestAmount(interest);
+        response.setTotalPayable(planAmount);
+        response.setDailyEmi(dailyEmi);
+        response.setDuration(plan.getDurationDays());
+
+        // 🔥 ACTIVE / INACTIVE logic
+        if (planAmount.compareTo(fundBalance) <= 0) {
+            response.setStatus("ACTIVE");
         } else {
-            PlanStatus planStatus;
-            try {
-                planStatus = PlanStatus.valueOf(status.toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                throw new BadRequestException(PlanConstants.INVALID_STATUS);
-            }
-            plans = planRepository.findByStatus(planStatus);
+            response.setStatus("INACTIVE");
         }
 
-        plans.sort(Comparator.comparing(Plan::getTotalAmount));
-
-        List<PlanResponse> responseList = new ArrayList<>();
-        for (Plan plan : plans) {
-            responseList.add(mapToResponse(plan));
-        }
-
-        return responseList;
-    }
-    @Override
-    public PlanResponse selectEligiblePlan(Long customerId, Long planId) {
-
-        CustomerIncomeResponse incomeResponse = restTemplate.getForObject("" + customerId, CustomerIncomeResponse.class);
-
-        if (incomeResponse == null || incomeResponse.getIncome() == null) {
-            throw new BadRequestException(PlanConstants.CUSTOMER_INCOME_NOT_FOUND);
-        }
-
-        BigDecimal income = incomeResponse.getIncome();
-
-        List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
-
-        Plan selectedPlan = planRepository.findByPlanId(planId)
-                .orElseThrow(() -> new BadRequestException(PlanConstants.PLAN_NOT_FOUND));
-
-        if (selectedPlan.getStatus() != PlanStatus.ACTIVE) {
-            throw new BadRequestException(PlanConstants.PLAN_NOT_ACTIVE);
-        }
-
-        if (!eligiblePlanTypes.contains(selectedPlan.getName())) {
-            throw new BadRequestException(PlanConstants.PLAN_NOT_ELIGIBLE);
-        }
-
-        log.info("Customer {} selected eligible plan {} successfully", customerId, planId);
-
-        return mapToResponse(selectedPlan);
-    }
-
-    @Override
-    public PlanResponse getPlanById(Long planId) {
-
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new BadRequestException(PlanConstants.PLAN_NOT_FOUND));
-
-        return mapToResponse(plan);
-    }
-
-
-    @Override
-    public EligibilityResponse getEligiblePlans(Long customerId) {
-        CustomerIncomeResponse incomeResponse= restTemplate.getForObject(""+customerId,CustomerIncomeResponse.class);
-
-        BigDecimal income = incomeResponse.getIncome();
-
-//        BigDecimal income = BigDecimal.valueOf(55000);
-
-        List<PlanType> eligiblePlanTypes = getEligiblePlanTypes(income);
-
-        List<PlanResponse> eligiblePlans = new ArrayList<>();
-
-        if (!eligiblePlanTypes.isEmpty()) {
-            List<Plan> activePlans = planRepository.findByStatus(PlanStatus.ACTIVE);
-            activePlans.sort(Comparator.comparing(Plan::getTotalAmount));
-
-            for (Plan plan : activePlans) {
-                if (eligiblePlanTypes.contains(plan.getName())) {
-                    eligiblePlans.add(mapToResponse(plan));
-                }
-            }
-        }
-
-        log.info("Eligibility checked for customerId: {}, income: {}, eligible plans count: {}",
-                customerId, income, eligiblePlans.size());
-
-        return EligibilityResponse.builder()
-                .customerId(customerId)
-                .income(income)
-                .eligiblePlans(eligiblePlans)
-                .build();
-    }
-
-    private List<PlanType> getEligiblePlanTypes(BigDecimal income) {
-
-        if (income == null || income.compareTo(BigDecimal.valueOf(10000)) < 0) {
-            return Collections.emptyList();
-        }
-
-        if (income.compareTo(BigDecimal.valueOf(10000)) >= 0
-                && income.compareTo(BigDecimal.valueOf(20000)) < 0) {
-            return List.of(PlanType.BRONZE);
-        }
-
-        if (income.compareTo(BigDecimal.valueOf(20000)) >= 0
-                && income.compareTo(BigDecimal.valueOf(30000)) < 0) {
-            return List.of(PlanType.BRONZE, PlanType.SILVER);
-        }
-
-        if (income.compareTo(BigDecimal.valueOf(30000)) >= 0
-                && income.compareTo(BigDecimal.valueOf(50000)) < 0) {
-            return List.of(PlanType.BRONZE, PlanType.SILVER, PlanType.GOLD);
-        }
-
-        if (income.compareTo(BigDecimal.valueOf(50000)) >= 0
-                && income.compareTo(BigDecimal.valueOf(75000)) < 0) {
-            return List.of(PlanType.BRONZE, PlanType.SILVER, PlanType.GOLD, PlanType.PLATINUM);
-        }
-
-        return List.of(PlanType.BRONZE, PlanType.SILVER, PlanType.GOLD, PlanType.PLATINUM, PlanType.DIAMOND);
-    }
-
-    private PlanResponse mapToResponse(Plan plan) {
-        return PlanResponse.builder()
-                .planId(plan.getPlanId())
-                .name(plan.getName().name())
-                .totalAmount(plan.getTotalAmount())
-                .givenAmount(plan.getGivenAmount())
-                .advance(plan.getAdvance())
-                .dailyEmi(plan.getDailyEmi())
-                .days(plan.getDays())
-                .status(plan.getStatus().name())
-                .createdAt(plan.getCreatedAt())
-                .build();
+        return response;
     }
 }

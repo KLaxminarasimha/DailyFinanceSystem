@@ -3,6 +3,8 @@ package com.example.customer.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "employee_details")
 @Data
@@ -16,11 +18,11 @@ public class EmployeeDetails {
 
     private String empId;
     private String companyName;
-    private Double ctc;
-    private Double monthlySalary;
+    private BigDecimal monthlySalary;
     private Integer experience;
+    private BigDecimal ctc;
 
     @OneToOne
-    @JoinColumn(name = "customer_id", nullable = false, unique = true)
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 }

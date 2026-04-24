@@ -1,6 +1,7 @@
 package com.example.customer.service;
 
 import com.example.customer.dto.CustomerDTO;
+import com.example.customer.dto.CustomerResponse;
 import com.example.customer.entity.Customer;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CustomerService {
 
     void deleteCustomer(Long id);
 
-    Customer getCustomerById(Long id);
+    CustomerResponse getCustomerById(Long id);
 
     List<Customer> getAllCustomers();
 }

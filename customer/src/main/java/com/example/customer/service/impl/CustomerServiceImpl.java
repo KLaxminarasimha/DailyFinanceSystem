@@ -1,6 +1,9 @@
 package com.example.customer.service.impl;
 
+import com.example.customer.dto.BusinessDTO;
 import com.example.customer.dto.CustomerDTO;
+import com.example.customer.dto.CustomerResponse;
+import com.example.customer.dto.EmployeeDTO;
 import com.example.customer.entity.Customer;
 import com.example.customer.enums.UserType;
 import com.example.customer.repository.CustomerRepository;
@@ -54,11 +57,49 @@ public class CustomerServiceImpl implements CustomerService {
         repository.delete(customer);
     }
 
-    // ✅ GET BY ID
+    // ✅ GET BY ID (FIXED)
     @Override
-    public Customer getCustomerById(Long id) {
-        return repository.findById(id)
+    public CustomerResponse getCustomerById(Long id) {
+
+        Customer customer = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        CustomerResponse response = new CustomerResponse();
+
+        response.setId(customer.getId());
+        response.setUserType(customer.getUserType().name());
+
+        // EMPLOYEE
+        if (customer.getUserType() == UserType.EMPLOYEE) {
+
+            EmployeeDTO emp = new EmployeeDTO();
+
+            if (customer.getEmployeeDetails() != null) {
+                emp.setMonthlySalary(customer.getEmployeeDetails().getMonthlySalary());
+                emp.setCompanyName(customer.getEmployeeDetails().getCompanyName());
+                emp.setEmpId(customer.getEmployeeDetails().getEmpId());
+                emp.setExperience(customer.getEmployeeDetails().getExperience());
+            }
+
+            response.setEmployeeDetails(emp);
+        }
+
+        // BUSINESS
+        if (customer.getUserType() == UserType.BUSINESS) {
+
+            BusinessDTO bus = new BusinessDTO();
+
+            if (customer.getBusinessDetails() != null) {
+                bus.setMonthlyIncome(customer.getBusinessDetails().getMonthlyIncome());
+                bus.setBusinessName(customer.getBusinessDetails().getBusinessName());
+                bus.setBusinessType(customer.getBusinessDetails().getBusinessType());
+                bus.setGstNumber(customer.getBusinessDetails().getGstNumber());
+            }
+
+            response.setBusinessDetails(bus);
+        }
+
+        return response;
     }
 
     // ✅ GET ALL
@@ -67,7 +108,7 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.findAll();
     }
 
-    // 🔹 COMMON MAPPING METHOD (VERY IMPORTANT)
+    // 🔹 COMMON MAPPING METHOD
     private void mapDtoToEntity(CustomerDTO dto, Customer customer) {
 
         customer.setFirstName(dto.getFirstName());
