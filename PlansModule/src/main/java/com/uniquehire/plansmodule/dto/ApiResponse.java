@@ -1,4 +1,4 @@
-package com.uniquehire.plansmodule.dto.response;
+package com.uniquehire.plansmodule.dto;
 
 
 import lombok.*;

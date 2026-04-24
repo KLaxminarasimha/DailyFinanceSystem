@@ -1,7 +1,7 @@
 package com.uniquehire.plansmodule.exception;
 
 
-import com.uniquehire.plansmodule.dto.response.ApiResponse;
+import com.uniquehire.plansmodule.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

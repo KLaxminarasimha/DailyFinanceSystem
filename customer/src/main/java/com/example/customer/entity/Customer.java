@@ -34,4 +34,12 @@ public class Customer {
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    // 🔥 ADD THESE (VERY IMPORTANT)
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private EmployeeDetails employeeDetails;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    private BusinessDetails businessDetails;
 }

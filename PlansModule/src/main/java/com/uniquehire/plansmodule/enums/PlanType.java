@@ -1,9 +1,8 @@
 package com.uniquehire.plansmodule.enums;
 
 public enum PlanType {
-    BRONZE,
-    SILVER,
-    GOLD,
-    PLATINUM,
-    DIAMOND
+    PLAN_10K,
+    PLAN_20K,
+    PLAN_30K,
+    PLAN_50K
 }
