@@ -7,16 +7,18 @@ import java.util.List;
 
 public interface LoanService {
 
-    LoanResponseDTO createLoan(Long customerid,Long planid);
+    // 🔹 Create Loan
+    LoanResponseDTO createLoan(LoanRequestDTO request);
 
-    LoanResponseDTO getLoan(Long id);
+    // 🔹 Get single loan
+    LoanResponseDTO getLoan(Long loanId);
 
+    // 🔹 Get all loans
     List<LoanResponseDTO> getAllLoans();
 
-    void updateLoanStatus(Long loanId, String status, String remarks);
-
+    // 🔹 Get loans by customer
     List<LoanResponseDTO> getLoansByCustomerId(Long customerId);
 
-    List<LoanResponseDTO> getLoansByStatus(String status);
-
+    // 🔹 Update status (optional for later)
+    void updateLoanStatus(Long loanId, String status, String remarks);
 }
