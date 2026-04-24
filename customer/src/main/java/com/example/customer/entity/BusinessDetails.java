@@ -1,4 +1,3 @@
-
 package com.example.customer.entity;
 
 import jakarta.persistence.*;
@@ -19,7 +18,6 @@ public class BusinessDetails {
     private String businessType;
     private String gstNumber;
     private Double monthlyIncome;
-    private Integer yearsInBusiness;
 
     @OneToOne
     @JoinColumn(name = "customer_id", nullable = false, unique = true)

@@ -1,12 +1,9 @@
-
 package com.example.customer.service;
 
-import com.example.customer.dto.EmployeeDetailsRequest;
-import com.example.customer.dto.EmployeeDetailsResponse;
+import com.example.customer.dto.EmployeeDTO;
+import com.example.customer.entity.EmployeeDetails;
 
 public interface EmployeeDetailsService {
 
-    EmployeeDetailsResponse addEmployeeDetails(Long customerId, EmployeeDetailsRequest request);
-
-    EmployeeDetailsResponse getEmployeeDetails(Long customerId);
+    EmployeeDetails addEmployee(Long customerId, EmployeeDTO dto);
 }

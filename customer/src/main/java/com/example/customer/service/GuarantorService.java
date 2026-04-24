@@ -1,13 +1,9 @@
 package com.example.customer.service;
 
-import com.example.customer.dto.CreateGuarantorRequest;
-import com.example.customer.dto.GuarantorResponse;
-
-import java.util.List;
+import com.example.customer.dto.GuarantorDTO;
+import com.example.customer.entity.Guarantor;
 
 public interface GuarantorService {
 
-    GuarantorResponse addGuarantor(Long customerId, CreateGuarantorRequest request);
-
-    List<GuarantorResponse> getGuarantorsByCustomer(Long customerId);
+    Guarantor addGuarantor(Long customerId, GuarantorDTO dto);
 }

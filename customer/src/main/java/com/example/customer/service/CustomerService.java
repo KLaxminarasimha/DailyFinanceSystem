@@ -1,18 +1,20 @@
 package com.example.customer.service;
 
-import com.example.customer.dto.CreateCustomerRequest;
-import com.example.customer.dto.CustomerResponse;
-import com.example.customer.dto.UpdateCustomerRequest;
+import com.example.customer.dto.CustomerDTO;
 import com.example.customer.entity.Customer;
-import org.springframework.data.domain.Page;
+
+import java.util.List;
+
 
 public interface CustomerService {
 
-    CustomerResponse createCustomer(CreateCustomerRequest request);
-    Page<CustomerResponse> getAllCustomers(int page, int size);
-    CustomerResponse getCustomerById(Long id);
-    CustomerResponse updateCustomer(Long id, UpdateCustomerRequest request);
+    Customer createCustomer(CustomerDTO dto, Long authUserId);
+
+    Customer updateCustomer(Long id, CustomerDTO dto);
+
     void deleteCustomer(Long id);
 
+    Customer getCustomerById(Long id);
 
+    List<Customer> getAllCustomers();
 }

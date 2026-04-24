@@ -13,9 +13,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByLoanId(Long loanId);//get all payment for a loan
 
-    List<Payment> findByStatus(Long loanId);// get payments by status
-
-    List<Payment> findByLoanAndStatus(Long loanId, PaymentStatus status);// get payment by loan  +status
+    List<Payment> findByLoanIdAndStatus(Long loanId, PaymentStatus status);// get payment by loan  +status
 
 
 

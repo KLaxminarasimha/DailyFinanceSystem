@@ -1,188 +1,182 @@
-
 package com.uniquehire.paymentservice.service.impl;
 
-import com.uniquehire.paymentservice.dtos.Request.PayDueRequest;
-import com.uniquehire.paymentservice.dtos.Request.PaymentRequest;
+import com.uniquehire.paymentservice.dtos.Request.*;
 import com.uniquehire.paymentservice.dtos.Response.PaymentResponse;
 import com.uniquehire.paymentservice.entity.Fine;
 import com.uniquehire.paymentservice.entity.Payment;
 import com.uniquehire.paymentservice.enums.FineStatus;
-import com.uniquehire.paymentservice.enums.PaymentMethod;
 import com.uniquehire.paymentservice.enums.PaymentStatus;
-import com.uniquehire.paymentservice.exception.BusinessException;
-import com.uniquehire.paymentservice.exception.ResourceNotFoundException;
 import com.uniquehire.paymentservice.repository.FineRepository;
 import com.uniquehire.paymentservice.repository.PaymentRepository;
 import com.uniquehire.paymentservice.service.PaymentService;
-import org.springframework.beans.factory.annotation.Value;
+import com.uniquehire.paymentservice.utils.OtpUtil;
+import com.uniquehire.paymentservice.utils.PaymentCalculationUtil;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
-public class PaymentServiceImpl implements PaymentService{
+@RequiredArgsConstructor
+public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final FineRepository fineRepository;
+    private final OtpUtil otpUtil;
 
-    public PaymentServiceImpl(PaymentRepository paymentRepository,
-                              FineRepository fineRepository) {
-        this.paymentRepository = paymentRepository;
-        this.fineRepository = fineRepository;
+    // 🔹 Dummy loan data (replace with LoanService later)
+    private BigDecimal getLoanAmount(Long loanId) {
+        return BigDecimal.valueOf(10000);
     }
+
+    // ✅ PAY EMI
     @Override
-    public PaymentResponse payEmi(PaymentRequest request) {
+    public PaymentResponse payEmi(Long loanId, PaymentRequest req) {
 
-        // 👉 Assume we get from Loan Module
-        BigDecimal totalLoanAmount = new BigDecimal("10000");
-
-        // Step 1: EMI = 1%
-        BigDecimal emi = totalLoanAmount.multiply(new BigDecimal("0.01"));
-
-        // Step 2: Fine = 1% of EMI
-        BigDecimal fine = emi.multiply(new BigDecimal("0.01"));
-
-        BigDecimal paidAmount = request.getPayAmount();
+        BigDecimal loanAmount = getLoanAmount(loanId);
+        BigDecimal emi = PaymentCalculationUtil.calculateEmi(loanAmount);
+        BigDecimal paid = req.getPaidAmount();
 
         BigDecimal due = BigDecimal.ZERO;
-        int daysCovered = 0;
+        BigDecimal fine = BigDecimal.ZERO;
+        int days = 0;
 
-        LocalDate today = LocalDate.now();
-        LocalDate nextDate;
+        // 🔥 EMI LOGIC
+        if (paid.compareTo(emi) < 0) {
+            due = emi.subtract(paid);
+            fine = PaymentCalculationUtil.calculateFine(emi);
+        } else if (paid.compareTo(emi) == 0) {
+            days = 1;
+        } else {
+            days = PaymentCalculationUtil.calculateDays(paid, emi);
 
-        PaymentStatus status;
-
-        // 🔴 CASE 1: Partial Payment
-        if (paidAmount.compareTo(emi) < 0) {
-
-            due = emi.subtract(paidAmount);
-
-            nextDate = today.plusDays(1);
-
-            status = PaymentStatus.PENDING;
-
-            // save fine
-            saveFine(request.getLoanId(), fine, "Partial payment");
-
-        }
-
-        // 🟢 CASE 2: Exact Payment
-        else if (paidAmount.compareTo(emi) == 0) {
-
-            nextDate = today.plusDays(1);
-
-            status = PaymentStatus.PAID;
-        }
-
-        // 🔵 CASE 3: Extra Payment
-        else {
-
-            daysCovered = paidAmount.divide(emi).intValue();
-
-            BigDecimal remaining = paidAmount.remainder(emi);
-
-            nextDate = today.plusDays(daysCovered);
-
-            status = PaymentStatus.PAID;
-
-            // optional: remaining can be stored as advance
-            if (remaining.compareTo(BigDecimal.ZERO) > 0) {
-                System.out.println("Advance amount: " + remaining);
+            BigDecimal remainder = paid.remainder(emi);
+            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
+                due = emi.subtract(remainder);
+                fine = PaymentCalculationUtil.calculateFine(emi);
             }
         }
 
-        // 👉 Save Payment
         Payment payment = new Payment();
-        payment.setLoanId(request.getLoanId());
-        payment.setPaymentDate(today);
+        payment.setLoanId(loanId);
+        payment.setPaymentDate(req.getPaymentDate());
         payment.setEmiAmount(emi);
-        payment.setPaidAmount(paidAmount);
+        payment.setPaidAmount(paid);
         payment.setDueAmount(due);
         payment.setFineAmount(fine);
-        payment.setDaysCovered(daysCovered);
-        payment.setNextEmiDate(nextDate);
-        payment.setStatus(status);
-        payment.setPaymentMethod(PaymentMethod.valueOf(request.getPaymentMethod()));
-        payment.setUpiId(request.getUpiId());
+        payment.setDaysCovered(days);
+        payment.setNextEmiDate(LocalDate.now().plusDays(days));
+        payment.setPaymentMethod(req.getPaymentMethod());
+        payment.setUpiId(req.getUpiId());
+        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
+                ? PaymentStatus.PENDING
+                : PaymentStatus.COMPLETED);
 
-        Payment saved = paymentRepository.save(payment);
+        // ✅ Fine mapping
+        if (fine.compareTo(BigDecimal.ZERO) > 0) {
+            Fine f = new Fine();
+            f.setLoanId(loanId);
+            f.setFineAmount(fine);
+            f.setReason("Late/Partial Payment");
+            f.setDate(LocalDate.now());
+            f.setStatus(FineStatus.PENDING);
+            f.setPayment(payment);
 
-        return mapToResponse(saved);
-    }
-
-    // ✅ PAY REMAINING DUE
-    @Override
-    public PaymentResponse payDue(PayDueRequest request) {
-
-        Payment payment = paymentRepository.findById(request.getPaymentId())
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
-
-        BigDecimal due = payment.getDueAmount();
-        BigDecimal paid = request.getAmountPaid();
-
-        // If paid full due
-        if (paid.compareTo(due) >= 0) {
-
-            payment.setDueAmount(BigDecimal.ZERO);
-            payment.setStatus(PaymentStatus.PAID);
-
-        } else {
-
-            // still pending
-            BigDecimal remaining = due.subtract(paid);
-            payment.setDueAmount(remaining);
-            payment.setStatus(PaymentStatus.PENDING);
+            payment.getFines().add(f);
         }
 
-        Payment updated = paymentRepository.save(payment);
+        paymentRepository.save(payment);
 
-        return mapToResponse(updated);
+        return mapToResponse(payment);
     }
 
-    // ✅ GET PAYMENTS
+    // 🔐 SEND OTP
     @Override
-    public List<PaymentResponse> getPaymentsByLoanId(Long loanId) {
+    public String sendOtp(Long paymentId, String email) {
 
-        return paymentRepository.findByLoanId(loanId)
-                .stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        String otp = otpUtil.generateOtp(paymentId);
+
+        // Simulated email
+        System.out.println("OTP sent to " + email + " : " + otp);
+
+        return "OTP sent successfully";
     }
 
-    // 🔧 HELPER: SAVE FINE
-    private void saveFine(Long loanId, BigDecimal amount, String reason) {
+    // 🔐 VERIFY OTP
+    @Override
+    public PaymentResponse verifyOtp(OtpVerifyRequest req) {
 
-        Fine fine = new Fine();
-        fine.setLoanId(loanId);
-        fine.setFineAmount(amount);
-        fine.setReason(reason);
-        fine.setDate(LocalDate.now());
-        fine.setStatus(FineStatus.PENDING);
+        Payment payment = paymentRepository.findById(req.getPaymentId())
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        fineRepository.save(fine);
+        boolean valid = otpUtil.verifyOtp(req.getPaymentId(), req.getOtp());
+
+        if (!valid) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        payment.setStatus(PaymentStatus.COMPLETED);
+        paymentRepository.save(payment);
+
+        return mapToResponse(payment);
     }
 
-    // 🔧 HELPER: MAP ENTITY → DTO
+    // 🔥 PAY DUE
+    @Override
+    public PaymentResponse payDue(PayDueRequest req) {
+
+        List<Payment> pendingPayments =
+                paymentRepository.findByLoanIdAndStatus(
+                        req.getLoanId(), PaymentStatus.PENDING);
+
+        BigDecimal totalDue = pendingPayments.stream()
+                .map(Payment::getDueAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (req.getAmountPaid().compareTo(totalDue) < 0) {
+            throw new RuntimeException("Please pay full due amount");
+        }
+
+        pendingPayments.forEach(p -> {
+            p.setDueAmount(BigDecimal.ZERO);
+            p.setStatus(PaymentStatus.COMPLETED);
+        });
+
+        paymentRepository.saveAll(pendingPayments);
+
+        return mapToResponse(pendingPayments.get(0));
+    }
+
+    // 📄 GET PAYMENTS
+    @Override
+    public List<PaymentResponse> getPayments(Long loanId) {
+
+        List<Payment> payments = paymentRepository.findByLoanId(loanId);
+
+        return payments.stream()
+                .map(this::mapToResponse)   // ✅ FIXED .map ERROR
+                .toList();
+    }
+
+    // ✅ MAPPER (VERY IMPORTANT - fixes your error)
     private PaymentResponse mapToResponse(Payment payment) {
 
         PaymentResponse res = new PaymentResponse();
 
         res.setPaymentId(payment.getPaymentId());
         res.setLoanId(payment.getLoanId());
+        res.setPaymentDate(payment.getPaymentDate());
         res.setEmiAmount(payment.getEmiAmount());
         res.setPaidAmount(payment.getPaidAmount());
         res.setDueAmount(payment.getDueAmount());
         res.setFineAmount(payment.getFineAmount());
         res.setDaysCovered(payment.getDaysCovered());
         res.setNextEmiDate(payment.getNextEmiDate());
-        res.setStatus(payment.getStatus().name());
+//        res.setPaymentMethod(payment.getPaymentMethod());
+        res.setStatus(payment.getStatus());
 
         return res;
     }
