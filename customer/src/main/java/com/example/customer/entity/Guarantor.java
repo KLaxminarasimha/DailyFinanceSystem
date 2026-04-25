@@ -1,5 +1,6 @@
 package com.example.customer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class Guarantor {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
+    @JsonIgnore
     private Customer customer;
 }

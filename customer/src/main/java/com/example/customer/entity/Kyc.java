@@ -1,6 +1,7 @@
 package com.example.customer.entity;
 
 import com.example.customer.enums.KycStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +31,8 @@ public class Kyc {
     @Enumerated(EnumType.STRING)
     private KycStatus kycStatus;
 
-    @OneToOne
-    @JoinColumn(name = "customer_id", unique = true)
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    @JsonIgnore
     private Customer customer;
 }

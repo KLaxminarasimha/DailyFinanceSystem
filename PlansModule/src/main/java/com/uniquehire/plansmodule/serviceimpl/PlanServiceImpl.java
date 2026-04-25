@@ -81,6 +81,31 @@ public class PlanServiceImpl implements PlanService {
 
         return BigDecimal.ZERO;
     }
+    @Override
+    public PlanResponse getPlanById(Long planId) {
+
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new RuntimeException("Plan not found"));
+
+        BigDecimal planAmount = plan.getPlanAmount();
+
+        BigDecimal disbursed = planAmount.multiply(BigDecimal.valueOf(0.9));
+        BigDecimal interest = planAmount.multiply(BigDecimal.valueOf(0.1));
+        BigDecimal dailyEmi = planAmount.multiply(BigDecimal.valueOf(0.01));
+
+        PlanResponse response = new PlanResponse();
+
+        response.setPlanId(plan.getPlanId());
+        response.setPlanAmount(planAmount);
+        response.setDisbursedAmount(disbursed);
+        response.setInterestAmount(interest);
+        response.setTotalPayable(planAmount);
+        response.setDailyEmi(dailyEmi);
+        response.setDuration(plan.getDurationDays()); // 👈 IMPORTANT
+        response.setStatus(plan.getStatus().name());
+
+        return response;
+    }
 
     // 🔥 Mapping logic
     private PlanResponse mapToResponse(Plan plan, BigDecimal fundBalance) {

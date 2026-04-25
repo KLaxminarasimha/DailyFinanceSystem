@@ -1,6 +1,7 @@
 package com.example.customer.entity;
 
 import com.example.customer.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,8 +39,10 @@ public class Customer {
     // 🔥 ADD THESE (VERY IMPORTANT)
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private EmployeeDetails employeeDetails;
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
     private BusinessDetails businessDetails;
 }

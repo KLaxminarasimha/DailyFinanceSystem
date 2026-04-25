@@ -1,5 +1,6 @@
 package com.example.customer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,8 @@ public class EmployeeDetails {
     private Integer experience;
     private BigDecimal ctc;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id")
+    @JsonIgnore
     private Customer customer;
 }

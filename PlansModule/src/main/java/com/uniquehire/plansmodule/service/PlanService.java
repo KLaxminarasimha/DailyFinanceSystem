@@ -7,4 +7,6 @@ import java.util.List;
 public interface PlanService {
 
     List<PlanResponse> getEligiblePlans(Long customerId);
+
+    PlanResponse getPlanById(Long planId);
 }
