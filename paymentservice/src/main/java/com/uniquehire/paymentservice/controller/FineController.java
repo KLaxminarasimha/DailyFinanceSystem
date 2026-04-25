@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.uniquehire.paymentservice.constants.MessageConstants.FINE_LIST;
+import static com.uniquehire.paymentservice.constants.MessageConstants.FINE_UPDATED;
+
 @RestController
 @RequestMapping("/fines")
 public class FineController {
@@ -33,7 +36,7 @@ public class FineController {
         List<FineResponse> fines = fineService.getFines(loanId);
 
         return ApiResponse.success(
-                "Fines fetched successfully",
+                FINE_LIST,
                 fines,
                 200
         );
@@ -49,7 +52,7 @@ public class FineController {
         FineResponse response = fineService.updateStatus(fineId, request);
 
         return ApiResponse.success(
-                "Fine status updated successfully",
+                FINE_UPDATED,
                 response,
                 200
         );

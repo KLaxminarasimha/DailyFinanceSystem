@@ -34,6 +34,4 @@ public class PaymentResponse {
 
     private  LocalDate paymentDate;
 
-//    public static Object builder() {
-//    }
 }

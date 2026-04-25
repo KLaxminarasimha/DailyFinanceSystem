@@ -1,6 +1,7 @@
 package com.uniquehire.paymentservice.service.impl;
 
 import com.uniquehire.paymentservice.dtos.Request.*;
+import com.uniquehire.paymentservice.dtos.Response.ApiResponse;
 import com.uniquehire.paymentservice.dtos.Response.PaymentResponse;
 import com.uniquehire.paymentservice.entity.Fine;
 import com.uniquehire.paymentservice.entity.Payment;
@@ -13,11 +14,15 @@ import com.uniquehire.paymentservice.utils.OtpUtil;
 import com.uniquehire.paymentservice.utils.PaymentCalculationUtil;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +31,33 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final FineRepository fineRepository;
     private final OtpUtil otpUtil;
+    private final RestTemplate restTemplate;
+
+    @Value("${upi.default.id}")
+    private String defaultUpiId;
+
+    @Value("${loan.service.base-url}")
+    private String loanServiceUrl;
+
+    private BigDecimal getLoanAmount(Long loanId) {
+
+        String url = loanServiceUrl + "/" + loanId;
+
+        ApiResponse response = restTemplate.getForObject(url, ApiResponse.class);
+
+        if (response == null || !response.isSuccess()) {
+            throw new RuntimeException("Loan not found");
+        }
+
+        Map<String, Object> data = (Map<String, Object>) response.getData();
+
+        return new BigDecimal(data.get("totalAmount").toString());
+    }
 
     // 🔹 Dummy loan data (replace with LoanService later)
-    private BigDecimal getLoanAmount(Long loanId) {
-        return BigDecimal.valueOf(10000);
-    }
+//    private BigDecimal getLoanAmount(Long loanId) {
+//        return BigDecimal.valueOf(10000);
+//    }
 
     // ✅ PAY EMI
     @Override
@@ -44,20 +71,53 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal fine = BigDecimal.ZERO;
         int days = 0;
 
-        // 🔥 EMI LOGIC
+//        // 🔥 EMI LOGIC
+//        if (paid.compareTo(emi) < 0) {
+//            due = emi.subtract(paid);
+//            fine = PaymentCalculationUtil.calculateFine(emi);
+//        } else if (paid.compareTo(emi) == 0) {
+//            days = 1;
+//        } else {
+//            days = PaymentCalculationUtil.calculateDays(paid, emi);
+//
+//            BigDecimal remainder = paid.remainder(emi);
+//            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
+//                due = emi.subtract(remainder);
+//                fine = PaymentCalculationUtil.calculateFine(emi);
+//            }
+//        }
+//
+//        Payment payment = new Payment();
+//        payment.setLoanId(loanId);
+//        payment.setPaymentDate(req.getPaymentDate());
+//        payment.setEmiAmount(emi);
+//        payment.setPaidAmount(paid);
+//        payment.setDueAmount(due);
+//        payment.setFineAmount(fine);
+//        payment.setDaysCovered(days);
+//        payment.setNextEmiDate(LocalDate.now().plusDays(days));
+//        payment.setPaymentMethod(req.getPaymentMethod());
+//        payment.setUpiId(defaultUpiId);
+//        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
+//                ? PaymentStatus.PENDING
+//                : PaymentStatus.COMPLETED);
+        // ✅ CASE 1: LESS THAN EMI → PENDING
         if (paid.compareTo(emi) < 0) {
+
             due = emi.subtract(paid);
             fine = PaymentCalculationUtil.calculateFine(emi);
-        } else if (paid.compareTo(emi) == 0) {
-            days = 1;
-        } else {
-            days = PaymentCalculationUtil.calculateDays(paid, emi);
+            days = 0;
+        }
 
-            BigDecimal remainder = paid.remainder(emi);
-            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
-                due = emi.subtract(remainder);
-                fine = PaymentCalculationUtil.calculateFine(emi);
-            }
+        // ✅ CASE 2: EQUAL OR MORE → COMPLETED
+        else {
+
+            int emiCovered = paid.divide(emi, 0, BigDecimal.ROUND_DOWN).intValue();
+            days = emiCovered;
+
+            // 🔥 FIX: No due for extra payment
+            due = BigDecimal.ZERO;
+            fine = BigDecimal.ZERO;
         }
 
         Payment payment = new Payment();
@@ -68,12 +128,24 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setDueAmount(due);
         payment.setFineAmount(fine);
         payment.setDaysCovered(days);
-        payment.setNextEmiDate(LocalDate.now().plusDays(days));
+
+        // ✅ Safe next EMI date
+        if (days > 0) {
+            payment.setNextEmiDate(LocalDate.now().plusDays(days));
+        } else {
+            payment.setNextEmiDate(LocalDate.now().plusDays(1));
+        }
+
         payment.setPaymentMethod(req.getPaymentMethod());
-        payment.setUpiId(req.getUpiId());
-        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
-                ? PaymentStatus.PENDING
-                : PaymentStatus.COMPLETED);
+        payment.setUpiId(defaultUpiId);
+
+        // ✅ FIXED STATUS
+        if (paid.compareTo(emi) < 0) {
+            payment.setStatus(PaymentStatus.PENDING);
+        } else {
+            payment.setStatus(PaymentStatus.COMPLETED);
+        }
+
 
         // ✅ Fine mapping
         if (fine.compareTo(BigDecimal.ZERO) > 0) {
