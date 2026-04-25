@@ -34,8 +34,8 @@ public class PaymentController {
 
         return ApiResponse.success(
                 PAYMENT_SUCCESS,
-//                response,
-                service.payEmi(loanId,req),
+                response,
+//                service.payEmi(loanId,req),
                 200
         );
     }
@@ -64,8 +64,8 @@ public class PaymentController {
 
         return ApiResponse.success(
                 OTP_VERIFIED,
-//                response,
-                service.verifyOtp(req),
+                response,
+//                service.verifyOtp(req),
                 200
         );
     }
@@ -79,8 +79,8 @@ public class PaymentController {
 
         return ApiResponse.success(
                 DUE_PAYMENT_SUCCESS,
-                service.payDue(req),
-//                response,
+//                service.payDue(req),
+                response,
                 200
         );
     }
@@ -94,8 +94,8 @@ public class PaymentController {
 
         return ApiResponse.success(
                 PAYMENT_LIST,
-//                payments,
-                service.getPayments(loanId),
+                payments,
+//                service.getPayments(loanId),
                 200
         );
     }

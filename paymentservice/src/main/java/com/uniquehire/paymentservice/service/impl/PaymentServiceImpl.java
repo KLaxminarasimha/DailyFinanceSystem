@@ -33,6 +33,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final OtpUtil otpUtil;
     private final RestTemplate restTemplate;
 
+    @Value("${upi.default.id}")
+    private String defaultUpiId;
+
     @Value("${loan.service.base-url}")
     private String loanServiceUrl;
 
@@ -68,20 +71,53 @@ public class PaymentServiceImpl implements PaymentService {
         BigDecimal fine = BigDecimal.ZERO;
         int days = 0;
 
-        // 🔥 EMI LOGIC
+//        // 🔥 EMI LOGIC
+//        if (paid.compareTo(emi) < 0) {
+//            due = emi.subtract(paid);
+//            fine = PaymentCalculationUtil.calculateFine(emi);
+//        } else if (paid.compareTo(emi) == 0) {
+//            days = 1;
+//        } else {
+//            days = PaymentCalculationUtil.calculateDays(paid, emi);
+//
+//            BigDecimal remainder = paid.remainder(emi);
+//            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
+//                due = emi.subtract(remainder);
+//                fine = PaymentCalculationUtil.calculateFine(emi);
+//            }
+//        }
+//
+//        Payment payment = new Payment();
+//        payment.setLoanId(loanId);
+//        payment.setPaymentDate(req.getPaymentDate());
+//        payment.setEmiAmount(emi);
+//        payment.setPaidAmount(paid);
+//        payment.setDueAmount(due);
+//        payment.setFineAmount(fine);
+//        payment.setDaysCovered(days);
+//        payment.setNextEmiDate(LocalDate.now().plusDays(days));
+//        payment.setPaymentMethod(req.getPaymentMethod());
+//        payment.setUpiId(defaultUpiId);
+//        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
+//                ? PaymentStatus.PENDING
+//                : PaymentStatus.COMPLETED);
+        // ✅ CASE 1: LESS THAN EMI → PENDING
         if (paid.compareTo(emi) < 0) {
+
             due = emi.subtract(paid);
             fine = PaymentCalculationUtil.calculateFine(emi);
-        } else if (paid.compareTo(emi) == 0) {
-            days = 1;
-        } else {
-            days = PaymentCalculationUtil.calculateDays(paid, emi);
+            days = 0;
+        }
 
-            BigDecimal remainder = paid.remainder(emi);
-            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
-                due = emi.subtract(remainder);
-                fine = PaymentCalculationUtil.calculateFine(emi);
-            }
+        // ✅ CASE 2: EQUAL OR MORE → COMPLETED
+        else {
+
+            int emiCovered = paid.divide(emi, 0, BigDecimal.ROUND_DOWN).intValue();
+            days = emiCovered;
+
+            // 🔥 FIX: No due for extra payment
+            due = BigDecimal.ZERO;
+            fine = BigDecimal.ZERO;
         }
 
         Payment payment = new Payment();
@@ -92,12 +128,24 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setDueAmount(due);
         payment.setFineAmount(fine);
         payment.setDaysCovered(days);
-        payment.setNextEmiDate(LocalDate.now().plusDays(days));
+
+        // ✅ Safe next EMI date
+        if (days > 0) {
+            payment.setNextEmiDate(LocalDate.now().plusDays(days));
+        } else {
+            payment.setNextEmiDate(LocalDate.now().plusDays(1));
+        }
+
         payment.setPaymentMethod(req.getPaymentMethod());
-        payment.setUpiId(req.getUpiId());
-        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
-                ? PaymentStatus.PENDING
-                : PaymentStatus.COMPLETED);
+        payment.setUpiId(defaultUpiId);
+
+        // ✅ FIXED STATUS
+        if (paid.compareTo(emi) < 0) {
+            payment.setStatus(PaymentStatus.PENDING);
+        } else {
+            payment.setStatus(PaymentStatus.COMPLETED);
+        }
+
 
         // ✅ Fine mapping
         if (fine.compareTo(BigDecimal.ZERO) > 0) {

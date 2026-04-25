@@ -24,8 +24,8 @@ public class PaymentRequest {
     @NotBlank(message = "Payment method required")
     private PaymentMethod paymentMethod;
 
-    @NotBlank(message = "UPI ID required")
-    private String upiId;
+//    @NotBlank(message = "UPI ID required")
+//    private String upiId;
 
     private LocalDate paymentDate;
 
