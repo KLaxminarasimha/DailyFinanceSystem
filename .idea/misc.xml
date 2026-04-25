@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/customer/pom.xml" />
         <option value="$PROJECT_DIR$/PlansModule/pom.xml" />
         <option value="$PROJECT_DIR$/loanagent-module/pom.xml" />
+        <option value="$PROJECT_DIR$/fund-service/pom.xml" />
       </list>
     </option>
   </component>

@@ -3,81 +3,53 @@ package com.uniquehire.loanagentmodule.controller;
 import com.uniquehire.loanagentmodule.dto.Request.LoanRequestDTO;
 import com.uniquehire.loanagentmodule.dto.Response.LoanResponseDTO;
 import com.uniquehire.loanagentmodule.service.LoanService;
-import com.uniquehire.loanagentmodule.utils.ApiResponse;
-
-import com.uniquehire.loanagentmodule.utils.ResponseUtil;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/loans")
+@RequestMapping("/loans")
 @RequiredArgsConstructor
 public class LoanController {
 
     private final LoanService loanService;
 
-    // Create Loan
+    // 🔥 CREATE LOAN
     @PostMapping
-    public ResponseEntity<ApiResponse<LoanResponseDTO>> createLoan(
-            @Valid @RequestBody LoanRequestDTO request) {
+    public LoanResponseDTO createLoan(@RequestBody LoanRequestDTO request) {
 
-        LoanResponseDTO loan = loanService.createLoan(request.getCustomerId(),request.getPlanId());
-
-        return ResponseUtil.success(loan, "Loan created successfully", HttpStatus.CREATED);
+        return loanService.createLoan(
+                request.getCustomerId(),
+                request.getPlanId()
+        );
     }
 
-    // Get All Loans
+    // 🔥 GET LOAN BY ID
+    @GetMapping("/{id}")
+    public LoanResponseDTO getLoan(@PathVariable Long id) {
+        return loanService.getLoan(id);
+    }
+
+    // 🔥 GET ALL LOANS
     @GetMapping
-    public ResponseEntity<ApiResponse<List<LoanResponseDTO>>> getAllLoans() {
-
-        List<LoanResponseDTO> loans = loanService.getAllLoans();
-
-        return ResponseUtil.success(loans, "Loans retrieved successfully", HttpStatus.OK);
+    public List<LoanResponseDTO> getAllLoans() {
+        return loanService.getAllLoans();
     }
 
-    // Get Loan By Id
-    @GetMapping("/{loanId}")
-    public ResponseEntity<ApiResponse<LoanResponseDTO>> getLoanById(
-            @PathVariable Long loanId) {
-
-        LoanResponseDTO loan = loanService.getLoan(loanId);
-
-        return ResponseUtil.success(loan, "Loan retrieved successfully", HttpStatus.OK);
+    // 🔥 GET LOANS BY CUSTOMER
+    @GetMapping("/customer/{id}")
+    public List<LoanResponseDTO> getLoansByCustomer(@PathVariable Long id) {
+        return loanService.getLoansByCustomerId(id);
     }
 
-    // Update Loan Status
-    @PutMapping("/{loanId}/status")
-    public ResponseEntity<ApiResponse<String>> updateLoanStatus(
-            @PathVariable Long loanId,
-            @RequestParam String status,
-            @RequestParam(required = false) String remarks) {
+    // 🔥 UPDATE STATUS
+    @PutMapping("/{id}")
+    public String updateStatus(@PathVariable Long id,
+                               @RequestParam String status,
+                               @RequestParam String remarks) {
 
-        loanService.updateLoanStatus(loanId, status, remarks);
-
-        return ResponseUtil.success("Status updated", "Loan status updated successfully", HttpStatus.OK);
-    }
-
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<ApiResponse<List<LoanResponseDTO>>> getLoansByCustomerId(
-            @PathVariable Long customerId) {
-
-        List<LoanResponseDTO> loans = loanService.getLoansByCustomerId(customerId);
-
-        return ResponseUtil.success(loans, "Customer loans retrieved", HttpStatus.OK);
-    }
-
-    @GetMapping("/status/{status}")
-    public ResponseEntity<ApiResponse<List<LoanResponseDTO>>> getLoansByStatus(
-            @PathVariable String status) {
-
-        List<LoanResponseDTO> loans = loanService.getLoansByStatus(status);
-
-        return ResponseUtil.success(loans, "Loans retrieved by status", HttpStatus.OK);
+        loanService.updateLoanStatus(id, status, remarks);
+        return "Loan status updated";
     }
 }

@@ -18,4 +18,8 @@ public class PlanController {
     public List<PlanResponse> getEligiblePlans(@PathVariable Long customerId) {
         return planService.getEligiblePlans(customerId);
     }
+    @GetMapping("/{id}")
+    public PlanResponse getPlan(@PathVariable Long id) {
+        return planService.getPlanById(id);
+    }
 }

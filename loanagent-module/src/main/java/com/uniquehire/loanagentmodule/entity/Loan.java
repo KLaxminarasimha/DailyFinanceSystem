@@ -27,8 +27,8 @@ public class Loan {
 
     private BigDecimal dailyEmi;
 
-    private Integer totalDays;
-    private Integer remainingDays;
+    private Integer totalDays;       // total duration
+    private Integer remainingDays;   // pending days
 
     private LocalDate startDate;
 

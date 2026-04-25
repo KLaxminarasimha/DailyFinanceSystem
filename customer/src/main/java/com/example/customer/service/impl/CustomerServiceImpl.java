@@ -69,6 +69,9 @@ public class CustomerServiceImpl implements CustomerService {
         response.setId(customer.getId());
         response.setUserType(customer.getUserType().name());
 
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
+
         // EMPLOYEE
         if (customer.getUserType() == UserType.EMPLOYEE) {
 
