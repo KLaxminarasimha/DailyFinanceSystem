@@ -18,7 +18,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long authUserId;
 
     private String firstName;
     private String lastName;
@@ -45,4 +44,7 @@ public class Customer {
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonIgnore
     private BusinessDetails businessDetails;
+
+    @Column(unique = true)
+    private Long authUserId;
 }

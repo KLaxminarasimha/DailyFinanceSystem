@@ -72,4 +72,16 @@ public class AuthController {
                 200
         );
     }
+    @PostMapping("/resend-otp")
+    public ResponseEntity<ApiResponse<Object>> resendOtp(
+            @RequestParam String email) {
+
+        authService.resendOtp(email);
+
+        return ResponseUtil.success(
+                null,
+                "OTP resent successfully",
+                200
+        );
+    }
 }

@@ -168,4 +168,25 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
     }
+
+    @Override
+    public void resendOtp(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isVerified()) {
+            throw new RuntimeException("User already verified");
+        }
+
+        // 🔥 Generate new OTP
+        String otp = String.valueOf((int)(Math.random() * 900000) + 100000);
+
+        user.setOtp(otp);
+        user.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
+
+        userRepository.save(user);
+
+        emailService.sendOtp(user.getEmail(), otp);
+    }
 }

@@ -23,111 +23,101 @@ public class PlanServiceImpl implements PlanService {
     private final CompanyFundRepository fundRepository;
     private final RestTemplate restTemplate;
 
+    // 🔥 SECURE METHOD (USES userId)
     @Override
-    public List<PlanResponse> getEligiblePlans(Long customerId) {
+    public List<PlanResponse> getEligiblePlans(Long userId) {
 
-        // 🔹 1. Call customer-service
-        String url = "http://customer-service/customers/" + customerId;
+        // 🔥 CALL CUSTOMER SERVICE USING userId
+        String url = "http://customer-service/customers/user/" + userId;
 
         CustomerResponse customer =
                 restTemplate.getForObject(url, CustomerResponse.class);
 
         BigDecimal income = getIncome(customer);
-        System.out.println("Income = " + income);
+        System.out.println("FULL CUSTOMER RESPONSE = " + customer);
+        System.out.println("EMPLOYEE DETAILS = " + customer.getEmployeeDetails());
 
-        if (income == null) {
-            throw new RuntimeException("Income is null");
+        if (income == null || income.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Invalid income");
         }
 
-        // 🔹 2. Get company fund
+        // 🔹 FUND CHECK
         CompanyFund fund = fundRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Fund not found"));
 
         BigDecimal fundBalance = fund.getBalance();
 
-        // 🔹 3. Get ACTIVE plans
+        // 🔹 GET ACTIVE PLANS
         List<Plan> plans = planRepository.findByStatus(PlanStatus.ACTIVE);
 
-        // 🔹 4. Map to response
+
         return plans.stream()
                 .filter(p -> p.getPlanAmount().compareTo(income) <= 0)
                 .map(p -> mapToResponse(p, fundBalance))
                 .toList();
     }
 
-    // 🔥 Extract income
-    private BigDecimal getIncome(CustomerResponse customer) {
-
-        if (customer == null) {
-            throw new RuntimeException("Customer is null");
-        }
-
-        if ("EMPLOYEE".equalsIgnoreCase(customer.getUserType())) {
-
-            if (customer.getEmployeeDetails() != null &&
-                    customer.getEmployeeDetails().getMonthlySalary() != null) {
-
-                return customer.getEmployeeDetails().getMonthlySalary();
-            }
-
-        } else if ("BUSINESS".equalsIgnoreCase(customer.getUserType())) {
-
-            if (customer.getBusinessDetails() != null &&
-                    customer.getBusinessDetails().getMonthlyIncome() != null) {
-
-                return customer.getBusinessDetails().getMonthlyIncome();
-            }
-        }
-
-        return BigDecimal.ZERO;
-    }
+    // 🔥 GET PLAN BY ID
     @Override
     public PlanResponse getPlanById(Long planId) {
 
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new RuntimeException("Plan not found"));
 
-        BigDecimal planAmount = plan.getPlanAmount();
-
-        BigDecimal disbursed = planAmount.multiply(BigDecimal.valueOf(0.9));
-        BigDecimal interest = planAmount.multiply(BigDecimal.valueOf(0.1));
-        BigDecimal dailyEmi = planAmount.multiply(BigDecimal.valueOf(0.01));
-
-        PlanResponse response = new PlanResponse();
-
-        response.setPlanId(plan.getPlanId());
-        response.setPlanAmount(planAmount);
-        response.setDisbursedAmount(disbursed);
-        response.setInterestAmount(interest);
-        response.setTotalPayable(planAmount);
-        response.setDailyEmi(dailyEmi);
-        response.setDuration(plan.getDurationDays()); // 👈 IMPORTANT
-        response.setStatus(plan.getStatus().name());
-
-        return response;
+        return mapToResponse(plan, BigDecimal.ZERO);
     }
 
-    // 🔥 Mapping logic
+    // 🔥 INCOME LOGIC
+    private BigDecimal getIncome(CustomerResponse customer) {
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        // 🔹 EMPLOYEE
+        if ("EMPLOYEE".equalsIgnoreCase(customer.getUserType())) {
+
+            if (customer.getEmployeeDetails() == null ||
+                    customer.getEmployeeDetails().getMonthlySalary() == null) {
+
+                throw new RuntimeException("Employee details not completed");
+            }
+
+            return customer.getEmployeeDetails().getMonthlySalary();
+        }
+
+        // 🔹 BUSINESS
+        if ("BUSINESS".equalsIgnoreCase(customer.getUserType())) {
+
+            if (customer.getBusinessDetails() == null ||
+                    customer.getBusinessDetails().getMonthlyIncome() == null) {
+
+                throw new RuntimeException("Business details not completed");
+            }
+
+            return customer.getBusinessDetails().getMonthlyIncome();
+        }
+
+        throw new RuntimeException("Invalid user type");
+    }
+
+    // 🔥 COMMON MAPPING
     private PlanResponse mapToResponse(Plan plan, BigDecimal fundBalance) {
 
         BigDecimal planAmount = plan.getPlanAmount();
 
-        BigDecimal disbursed = planAmount.multiply(BigDecimal.valueOf(0.9));
-        BigDecimal interest = planAmount.multiply(BigDecimal.valueOf(0.1));
-        BigDecimal dailyEmi = planAmount.multiply(BigDecimal.valueOf(0.01));
-
         PlanResponse response = new PlanResponse();
 
         response.setPlanId(plan.getPlanId());
         response.setPlanAmount(planAmount);
-        response.setDisbursedAmount(disbursed);
-        response.setInterestAmount(interest);
+        response.setDisbursedAmount(planAmount.multiply(BigDecimal.valueOf(0.9)));
+        response.setInterestAmount(planAmount.multiply(BigDecimal.valueOf(0.1)));
         response.setTotalPayable(planAmount);
-        response.setDailyEmi(dailyEmi);
+        response.setDailyEmi(planAmount.multiply(BigDecimal.valueOf(0.01)));
         response.setDuration(plan.getDurationDays());
 
-        // 🔥 ACTIVE / INACTIVE logic
-        if (planAmount.compareTo(fundBalance) <= 0) {
+        if (fundBalance.compareTo(BigDecimal.ZERO) > 0 &&
+                planAmount.compareTo(fundBalance) <= 0) {
             response.setStatus("ACTIVE");
         } else {
             response.setStatus("INACTIVE");

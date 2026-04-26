@@ -5,42 +5,114 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/controller/FundController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/dto/FundRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/dto/FundResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/entity/Fund.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/entity/FundTransactionLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/repository/FundRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/repository/FundTransactionLogRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/service/FundService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fund-service/src/main/java/com/dailyfinance/fund_service/service/impl/FundServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Request/FundRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/CompanyFundResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/TransactionRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/TransactionResponseDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/TransactionSummaryDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/dailyfinance/api_gateway/filter/JwtGatewayFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Request/TransactionRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/security/JwtAuthFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/security/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/security/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/FundRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/TransactionRequestDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/Customer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/controller/PlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/controller/PlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/CustomerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/dto/CustomerResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/service/PlanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/service/PlanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/serviceimpl/PlanServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/java/com/uniquehire/plansmodule/serviceimpl/PlanServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/TransactionReportService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/TransactionReportService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/config/RestConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/config/RestConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/controller/ReportController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/ApiWrapperDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/CollectionReportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/CollectionReportItemDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/ErrorResponseDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/External/ExternalAgentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/External/ExternalCustomerDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/External/ExternalLoanDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/External/ExternalPaymentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/External/ExternalPlanDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/AdminDashboardDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/DailyCollectionReportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/DefaultWarningDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/LoanCompletedReportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/LoanDetailReportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/Extra/MissedPaymentAlertDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/LoanReportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/LoanReportItemDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/ReportSummaryDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/TransactionRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/dto/TransactionResponseDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/entity/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/entity/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/mapper/TransactionMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/repository/TransactionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/service/ExternalApiService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/service/ReportService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/serviceImplementation/ExternalApiServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/serviceImplementation/ReportServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/serviceImplementation/TransactionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/java/com/uniquehire/TransactionAndReport/serviceImplementation/TransactionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/dailyfinance/auth_service/service/impl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Guarantor.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Guarantor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Kyc.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Kyc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmployeeDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmployeeDetailsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/LoanagentModuleApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/LoanagentModuleApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/config/RestTemplateConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/config/RestTemplateConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/controller/LoanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/controller/LoanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Request/LoanRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Request/LoanRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/CustomerResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/CustomerDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/LoanResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/LoanResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/PlanResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/dto/Response/PlanResponseDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/entity/Loan.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/entity/Loan.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/repository/LoanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/repository/LoanRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/service/LoanService.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/service/LoanService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/serviceImpl/LoanServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/java/com/uniquehire/loanagentmodule/serviceImpl/LoanServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/PaymentserviceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/PaymentserviceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/client/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/client/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/controller/FineController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/controller/PaymentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/CreateFineRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/OtpVerifyRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/PayDueRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/PaymentRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/PaymentRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/UpdateFineStatusRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Request/UpdatePaymentStatusRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/FineResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/LoanResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/LoanResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/PaymentResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/dtos/Response/PaymentResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/entity/Fine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/entity/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/entity/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/mapper/PaymentMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/repository/FineRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/repository/PaymentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/repository/PaymentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/FineService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/PaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/PaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/impl/FineServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/impl/PaymentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/java/com/uniquehire/paymentservice/service/impl/PaymentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,24 +162,31 @@
     "Application.CustomerApplication.executor": "Run",
     "Application.LoanagentModuleApplication.executor": "Run",
     "Application.PlansModuleApplication.executor": "Run",
+    "Maven.LoanManagementSystem [clean,compile...].executor": "Run",
     "Maven.LoanManagementSystem [clean,install].executor": "Run",
     "Maven.LoanManagementSystem [clean,package...].executor": "Run",
     "Maven.PlansModule [clean,compile,install].executor": "Run",
     "Maven.PlansModule [clean,compile].executor": "Run",
+    "Maven.api-gateway [clean,compile,install].executor": "Run",
+    "Maven.api-gateway [clean,install].executor": "Run",
     "Maven.auth-service [clean,compile,install].executor": "Run",
     "Maven.customer [clean,compile,install].executor": "Run",
     "Maven.fund-service [clean,compile,install].executor": "Run",
     "Maven.loanagent-module [clean,compile,install].executor": "Run",
+    "Maven.paymentservice [clean,compile,install].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
     "Spring Boot.AuthServiceApplication.executor": "Run",
     "Spring Boot.CustomerApplication.executor": "Run",
     "Spring Boot.FundServiceApplication.executor": "Run",
     "Spring Boot.LoanagentModuleApplication.executor": "Run",
+    "Spring Boot.PaymentserviceApplication.executor": "Run",
     "Spring Boot.PlansModuleApplication.executor": "Run",
+    "Spring Boot.TransactionReportService.executor": "Run",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "auth-module",
     "junie.onboarding.icon.badge.shown": "true",

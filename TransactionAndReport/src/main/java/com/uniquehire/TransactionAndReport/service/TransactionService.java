@@ -1,11 +1,16 @@
 package com.uniquehire.TransactionAndReport.service;
 
-import com.uniquehire.TransactionAndReport.dto.TransactionRequestDto;
-import com.uniquehire.TransactionAndReport.dto.TransactionResponseDto;
+import com.uniquehire.TransactionAndReport.dto.TransactionRequestDTO;
+import com.uniquehire.TransactionAndReport.dto.TransactionResponseDTO;
+import com.uniquehire.TransactionAndReport.dto.TransactionSummaryDTO;
 
 import java.util.List;
 
 public interface TransactionService {
-    TransactionResponseDto recordTransaction(TransactionRequestDto request);
-    List<TransactionResponseDto> getTransactionByPaymentId(Long paymentId);
+
+    TransactionResponseDTO save(TransactionRequestDTO request);
+
+    List<TransactionResponseDTO> getByLoan(Long loanId);
+
+    TransactionSummaryDTO getSummary();
 }

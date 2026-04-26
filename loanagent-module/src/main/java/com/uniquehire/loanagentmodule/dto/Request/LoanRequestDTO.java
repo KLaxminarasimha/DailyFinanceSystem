@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 @Data
 public class LoanRequestDTO {
 
-    @NotNull
-    private Long customerId;
 
     @NotNull
     private Long planId;

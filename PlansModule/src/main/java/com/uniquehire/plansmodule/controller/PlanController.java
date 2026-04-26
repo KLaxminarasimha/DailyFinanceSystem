@@ -14,12 +14,17 @@ public class PlanController {
 
     private final PlanService planService;
 
-    @GetMapping("/eligible/{customerId}")
-    public List<PlanResponse> getEligiblePlans(@PathVariable Long customerId) {
-        return planService.getEligiblePlans(customerId);
-    }
+    // 🔓 PUBLIC
     @GetMapping("/{id}")
     public PlanResponse getPlan(@PathVariable Long id) {
         return planService.getPlanById(id);
+    }
+
+    // 🔐 SECURE (NO customerId)
+    @GetMapping("/eligible")
+    public List<PlanResponse> getEligiblePlans(
+            @RequestHeader("X-USER-ID") Long userId) {
+
+        return planService.getEligiblePlans(userId);
     }
 }

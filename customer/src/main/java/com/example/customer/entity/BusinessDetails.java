@@ -22,7 +22,7 @@ public class BusinessDetails {
     private String gstNumber;
     private BigDecimal monthlyIncome;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "customer_id")
     @JsonIgnore
     private Customer customer;

@@ -32,5 +32,11 @@ public class Loan {
 
     private LocalDate startDate;
 
+    @Column(nullable = false)
+    private BigDecimal dueAmount = BigDecimal.ZERO;
+
+    @Column(nullable = false)
+    private BigDecimal fineAmount = BigDecimal.ZERO;
+
     private String status; // ACTIVE, CLOSED
 }

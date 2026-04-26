@@ -1,98 +1,87 @@
 package com.uniquehire.TransactionAndReport.serviceImplementation;
 
-import com.uniquehire.TransactionAndReport.dto.External.ExternalLoanDto;
-import com.uniquehire.TransactionAndReport.dto.External.ExternalPaymentDto;
-import com.uniquehire.TransactionAndReport.dto.TransactionRequestDto;
-import com.uniquehire.TransactionAndReport.dto.TransactionResponseDto;
+
+import com.uniquehire.TransactionAndReport.dto.TransactionRequestDTO;
+import com.uniquehire.TransactionAndReport.dto.TransactionResponseDTO;
+import com.uniquehire.TransactionAndReport.dto.TransactionSummaryDTO;
 import com.uniquehire.TransactionAndReport.entity.Transaction;
-import com.uniquehire.TransactionAndReport.exception.ResourceNotFoundException;
-import com.uniquehire.TransactionAndReport.exception.ValidationException;
-import com.uniquehire.TransactionAndReport.mapper.TransactionMapper;
 import com.uniquehire.TransactionAndReport.repository.TransactionRepository;
-import com.uniquehire.TransactionAndReport.service.ExternalApiService;
 import com.uniquehire.TransactionAndReport.service.TransactionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
-    private final TransactionRepository transactionRepository;
-    private final TransactionMapper transactionMapper;
-    private final ExternalApiService externalApiService;
+    private final TransactionRepository repository;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository,
-                                  TransactionMapper transactionMapper,
-                                  ExternalApiService externalApiService) {
-        this.transactionRepository = transactionRepository;
-        this.transactionMapper = transactionMapper;
-        this.externalApiService = externalApiService;
+    // 🔥 SAVE TRANSACTION
+    @Override
+    public TransactionResponseDTO save(TransactionRequestDTO request) {
+
+        Transaction tx = Transaction.builder()
+                .referenceId(request.getReferenceId())
+                .customerId(request.getCustomerId())
+                .amount(request.getAmount())
+                .type(request.getType())
+                .direction(request.getDirection())
+                .status("SUCCESS")
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return mapToResponse(repository.save(tx));
     }
 
+    // 🔥 GET BY LOAN
     @Override
-    public TransactionResponseDto recordTransaction(TransactionRequestDto request) {
-        try {
-            System.out.println("=== recordTransaction started ===");
-            System.out.println("Request paymentId: " + request.getPaymentId());
-            System.out.println("Request amount: " + request.getAmount());
-            System.out.println("Request gateway: " + request.getGateway());
-            System.out.println("Request transactionStatus: " + request.getTransactionStatus());
-
-            ExternalPaymentDto payment = externalApiService.getPaymentById(request.getPaymentId());
-            System.out.println("Payment response: " + payment);
-
-            if (payment == null) {
-                throw new ResourceNotFoundException("Payment not found for paymentId: " + request.getPaymentId());
-            }
-
-            System.out.println("Loan ID from payment: " + payment.getLoanId());
-
-            if (payment.getLoanId() == null) {
-                throw new ValidationException("Loan ID not found in payment details for paymentId: " + request.getPaymentId());
-            }
-
-            ExternalLoanDto loan = externalApiService.getLoanById(payment.getLoanId());
-            System.out.println("Loan response: " + loan);
-
-            if (loan == null) {
-                throw new ResourceNotFoundException("Loan not found for loanId: " + payment.getLoanId());
-            }
-
-            Transaction transaction = new Transaction();
-            transaction.setPaymentId(request.getPaymentId());
-            transaction.setLoanId(loan.getLoanId());
-            transaction.setCustomerId(loan.getCustomerId());
-            transaction.setAgentId(loan.getAgentId());
-            transaction.setAmount(request.getAmount());
-            transaction.setGateway(request.getGateway());
-            transaction.setStatus(request.getTransactionStatus());
-            transaction.setTimestamp(LocalDateTime.now());
-
-            System.out.println("Transaction before save: " + transaction);
-
-            Transaction saved = transactionRepository.save(transaction);
-            System.out.println("Saved transaction: " + saved);
-
-            TransactionResponseDto response = transactionMapper.toDto(saved);
-            System.out.println("Mapped response DTO: " + response);
-
-            return response;
-
-        } catch (Exception e) {
-            System.out.println("=== ERROR INSIDE recordTransaction ===");
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    @Override
-    public List<TransactionResponseDto> getTransactionByPaymentId(Long paymentId) {
-        return transactionRepository.findByPaymentId(paymentId)
+    public List<TransactionResponseDTO> getByLoan(Long loanId) {
+        return repository.findByReferenceId(loanId)
                 .stream()
-                .map(transactionMapper::toDto)
-                .collect(Collectors.toList());
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    // 🔥 SUMMARY (CORE REPORT)
+    @Override
+    public TransactionSummaryDTO getSummary() {
+
+        BigDecimal totalCredit = repository.findAll().stream()
+                .filter(t -> "CREDIT".equals(t.getDirection()))
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalDebit = repository.findAll().stream()
+                .filter(t -> "DEBIT".equals(t.getDirection()))
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        TransactionSummaryDTO summary = new TransactionSummaryDTO();
+        summary.setTotalCredit(totalCredit);
+        summary.setTotalDebit(totalDebit);
+        summary.setProfit(totalCredit.subtract(totalDebit));
+
+        return summary;
+    }
+
+    // 🔁 MAPPING
+    private TransactionResponseDTO mapToResponse(Transaction tx) {
+
+        TransactionResponseDTO res = new TransactionResponseDTO();
+
+        res.setTransactionId(tx.getTransactionId());
+        res.setReferenceId(tx.getReferenceId());
+        res.setCustomerId(tx.getCustomerId());
+        res.setAmount(tx.getAmount());
+        res.setType(tx.getType());
+        res.setDirection(tx.getDirection());
+        res.setStatus(tx.getStatus());
+        res.setTimestamp(tx.getTimestamp());
+
+        return res;
     }
 }
