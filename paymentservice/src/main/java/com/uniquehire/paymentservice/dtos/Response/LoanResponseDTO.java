@@ -1,15 +1,16 @@
 package com.uniquehire.paymentservice.dtos.Response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class LoanResponseDTO {
+
     private Long loanId;
-    private BigDecimal totalAmount;
+    private Long customerId;   // 🔥 ADD THIS
+
+    private BigDecimal dailyEmi;
+    private BigDecimal remainingAmount;
+    private BigDecimal dueAmount;
+    private BigDecimal fineAmount;
 }

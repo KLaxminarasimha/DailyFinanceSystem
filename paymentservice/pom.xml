@@ -5,11 +5,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ✅ STABLE SPRING BOOT -->
+    <!-- ✅ Spring Boot -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.5</version>
         <relativePath/>
     </parent>
 
@@ -19,10 +19,26 @@
     <name>paymentservice</name>
     <description>Payment Service</description>
 
+    <!-- ✅ PROPERTIES -->
     <properties>
         <java.version>21</java.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
     </properties>
 
+    <!-- ✅ SPRING CLOUD BOM (FIXES YOUR ERROR) -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- ✅ DEPENDENCIES -->
     <dependencies>
 
         <!-- 🌐 Web -->
@@ -35,6 +51,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- 📡 Consul Discovery -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+
+        <!-- 📊 Actuator (for health check in Consul) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!-- ✅ Validation -->
@@ -50,7 +78,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 🔥 Lombok (FIXED) -->
+        <!-- 🔥 Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -67,21 +95,24 @@
 
     </dependencies>
 
+    <!-- ✅ BUILD -->
     <build>
         <plugins>
 
-            <!-- 🚀 Spring Boot Plugin -->
+            <!-- 🚀 Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- ✅ Compiler Plugin (IMPORTANT for Lombok + Java 21) -->
+            <!-- ✅ Compiler (Lombok + Java 21) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
+                    <source>21</source>
+                    <target>21</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

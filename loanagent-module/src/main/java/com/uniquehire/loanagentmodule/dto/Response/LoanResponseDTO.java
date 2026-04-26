@@ -25,4 +25,6 @@ public class LoanResponseDTO {
     private LocalDate startDate;
 
     private String status;
+    private BigDecimal dueAmount;
+    private BigDecimal fineAmount;
 }

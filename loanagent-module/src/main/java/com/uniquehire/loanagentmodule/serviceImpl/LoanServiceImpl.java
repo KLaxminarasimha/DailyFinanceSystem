@@ -1,8 +1,10 @@
 package com.uniquehire.loanagentmodule.serviceImpl;
 
 import com.uniquehire.loanagentmodule.dto.Request.FundRequestDTO;
+import com.uniquehire.loanagentmodule.dto.Response.CustomerDTO;
 import com.uniquehire.loanagentmodule.dto.Response.LoanResponseDTO;
 import com.uniquehire.loanagentmodule.dto.Response.PlanResponseDTO;
+import com.uniquehire.loanagentmodule.dto.Request.TransactionRequestDTO;
 import com.uniquehire.loanagentmodule.entity.Loan;
 import com.uniquehire.loanagentmodule.repository.LoanRepository;
 import com.uniquehire.loanagentmodule.service.LoanService;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +26,19 @@ public class LoanServiceImpl implements LoanService {
 
     // 🔥 CREATE LOAN
     @Override
-    public LoanResponseDTO createLoan(Long customerId, Long planId) {
+    public LoanResponseDTO createLoan(Long userId, Long planId) {
+
+        // 🔥 STEP 1: GET CUSTOMER FROM CUSTOMER SERVICE
+        CustomerDTO customer = restTemplate.getForObject(
+                "http://customer-service/customers/user/" + userId,
+                CustomerDTO.class
+        );
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        Long customerId = customer.getId();
 
         // 1️⃣ CALL PLAN SERVICE
         PlanResponseDTO plan = restTemplate.getForObject(
@@ -41,7 +56,7 @@ public class LoanServiceImpl implements LoanService {
 
         // 3️⃣ CREATE LOAN ENTITY
         Loan loan = Loan.builder()
-                .customerId(customerId)
+                .customerId(customerId) // ✅ NOW SECURE
                 .planId(planId)
                 .planAmount(planAmount)
                 .disbursedAmount(disbursed)
@@ -51,12 +66,21 @@ public class LoanServiceImpl implements LoanService {
                 .remainingDays(plan.getDuration())
                 .startDate(LocalDate.now())
                 .status("ACTIVE")
+                .dueAmount(BigDecimal.ZERO)
+                .fineAmount(BigDecimal.ZERO)
                 .build();
 
         Loan savedLoan = loanRepository.save(loan);
 
-        // 🔥 4️⃣ CALL FUND SERVICE (DEDUCT MONEY)
+        // 🔥 4️⃣ CALL FUND SERVICE
         callFundService(disbursed, savedLoan.getLoanId());
+
+        // 🔥 5️⃣ CALL TRANSACTION SERVICE
+        callTransactionService(
+                savedLoan.getLoanId(),
+                customerId,
+                disbursed
+        );
 
         return mapToResponse(savedLoan);
     }
@@ -117,6 +141,44 @@ public class LoanServiceImpl implements LoanService {
         loanRepository.save(loan);
     }
 
+    @Override
+    public void updateAfterPayment(Long loanId,
+                                   BigDecimal paid,
+                                   BigDecimal due,
+                                   BigDecimal fine) {
+
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        // 🔥 1. CALCULATE NEW REMAINING
+        BigDecimal newRemaining = loan.getRemainingAmount().subtract(paid);
+
+        // prevent negative
+        if (newRemaining.compareTo(BigDecimal.ZERO) < 0) {
+            newRemaining = BigDecimal.ZERO;
+        }
+
+        loan.setRemainingAmount(newRemaining);
+
+        // 🔥 2. UPDATE DUE + FINE
+        loan.setDueAmount(due);
+        loan.setFineAmount(fine);
+
+        // 🔥 3. REDUCE DAYS
+        loan.setRemainingDays(loan.getRemainingDays() - 1);
+
+        // 🔥 4. STATUS LOGIC (FIXED)
+        if (newRemaining.compareTo(BigDecimal.ZERO) == 0) {
+            loan.setStatus("CLOSED");
+        } else {
+            loan.setStatus("ACTIVE");
+        }
+
+        loanRepository.save(loan);
+
+        System.out.println("💰 Payment applied → Loan updated");
+    }
+
     // 🔥 MAPPING METHOD
     private LoanResponseDTO mapToResponse(Loan loan) {
 
@@ -133,7 +195,48 @@ public class LoanServiceImpl implements LoanService {
         res.setRemainingDays(loan.getRemainingDays());
         res.setStartDate(loan.getStartDate());
         res.setStatus(loan.getStatus());
+        res.setDueAmount(loan.getDueAmount());
+        res.setFineAmount(loan.getFineAmount());
 
         return res;
+    }
+    private void callTransactionService(Long loanId,
+                                        Long customerId,
+                                        BigDecimal amount) {
+
+        TransactionRequestDTO tx = new TransactionRequestDTO(
+                loanId,
+                customerId,
+                amount,
+                "LOAN_DISBURSE",
+                "DEBIT"
+        );
+
+        restTemplate.postForObject(
+                "http://transaction-service/transactions",
+                tx,
+                String.class
+        );
+
+    }
+    @Override
+    public List<LoanResponseDTO> getLoansByUserId(Long userId) {
+
+        // 1️⃣ Call customer-service
+        String url = "http://customer-service/customers/user/" + userId;
+
+        Map customer = restTemplate.getForObject(url, Map.class);
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        Long customerId = Long.valueOf(customer.get("id").toString());
+
+        // 2️⃣ Fetch loans using customerId
+        return loanRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }

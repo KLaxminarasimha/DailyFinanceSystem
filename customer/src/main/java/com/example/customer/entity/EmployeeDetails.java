@@ -23,8 +23,9 @@ public class EmployeeDetails {
     private Integer experience;
     private BigDecimal ctc;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
+    // ✅ FIX HERE
+    @OneToOne
+    @JoinColumn(name = "customer_id", nullable = false, unique = true)
     @JsonIgnore
     private Customer customer;
 }
