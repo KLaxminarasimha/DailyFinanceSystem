@@ -1,179 +1,242 @@
 package com.uniquehire.loanagentmodule.serviceImpl;
 
-import com.uniquehire.loanagentmodule.dto.Response.CustomerResponseDTO;
+import com.uniquehire.loanagentmodule.dto.Request.FundRequestDTO;
+import com.uniquehire.loanagentmodule.dto.Response.CustomerDTO;
 import com.uniquehire.loanagentmodule.dto.Response.LoanResponseDTO;
 import com.uniquehire.loanagentmodule.dto.Response.PlanResponseDTO;
+import com.uniquehire.loanagentmodule.dto.Request.TransactionRequestDTO;
 import com.uniquehire.loanagentmodule.entity.Loan;
-import com.uniquehire.loanagentmodule.enums.LoanStatus;
-import com.uniquehire.loanagentmodule.exceptions.ResourceNotFoundException;
-
 import com.uniquehire.loanagentmodule.repository.LoanRepository;
 import com.uniquehire.loanagentmodule.service.LoanService;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class LoanServiceImpl implements LoanService {
 
     private final LoanRepository loanRepository;
-
     private final RestTemplate restTemplate;
 
-    @Value("${services.customer-service.url}")
-    private String customerServiceUrl;
-
-    @Value("${services.plan-service.url}")
-    private String planServiceUrl;
-
+    // 🔥 CREATE LOAN
     @Override
-    public LoanResponseDTO createLoan(Long customerid,Long planid) {
+    public LoanResponseDTO createLoan(Long userId, Long planId) {
 
-
-        CustomerResponseDTO customer =
-                restTemplate.getForObject(
-                        customerServiceUrl + "/" + customerid,
-                        CustomerResponseDTO.class
-                );
-
-        PlanResponseDTO plan = restTemplate.getForObject(
-                planServiceUrl + "/" + planid,
-                PlanResponseDTO.class
+        // 🔥 STEP 1: GET CUSTOMER FROM CUSTOMER SERVICE
+        CustomerDTO customer = restTemplate.getForObject(
+                "http://customer-service/customers/user/" + userId,
+                CustomerDTO.class
         );
 
         if (customer == null) {
-            throw new ResourceNotFoundException("Customer not found");
+            throw new RuntimeException("Customer not found");
         }
+
+        Long customerId = customer.getId();
+
+        // 1️⃣ CALL PLAN SERVICE
+        PlanResponseDTO plan = restTemplate.getForObject(
+                "http://plan-service/plans/" + planId,
+                PlanResponseDTO.class
+        );
 
         if (plan == null) {
-            throw new ResourceNotFoundException("Plan not found");
+            throw new RuntimeException("Plan not found");
         }
 
+        // 2️⃣ CALCULATE
+        BigDecimal planAmount = plan.getPlanAmount();
+        BigDecimal disbursed = planAmount.multiply(BigDecimal.valueOf(0.9));
 
-//        // TEMPORARY DATA FOR TESTING (remove later)
-//
-//        CustomerResponseDTO customer = new CustomerResponseDTO();
-//        customer.setCustomerId(customerid);
-//        customer.setCustomername("Test Customer");
-//
-//        PlanResponseDTO plan = new PlanResponseDTO();
-//        plan.setPlanId(planid);
-//        plan.setPlanName("TEST PLAN");
-//        plan.setDays(100);
-//        plan.setAdvance(BigDecimal.valueOf(2000));
-//        plan.setDailyEmi(BigDecimal.valueOf(202));
-//        plan.setGivenAmount(BigDecimal.valueOf(18000));
-//        plan.setTotalAmount(BigDecimal.valueOf(20000));
-//
-//        //
-
-        LocalDate startDate = LocalDate.now();
+        // 3️⃣ CREATE LOAN ENTITY
         Loan loan = Loan.builder()
-                .customerId(customer.getCustomerId())
-                .customerName(customer.getCustomername())
-                .planId(plan.getPlanId())
-                .planName(plan.getPlanName())
-                .days(plan.getDays())
-                .advance(plan.getAdvance())
+                .customerId(customerId) // ✅ NOW SECURE
+                .planId(planId)
+                .planAmount(planAmount)
+                .disbursedAmount(disbursed)
+                .remainingAmount(planAmount)
                 .dailyEmi(plan.getDailyEmi())
-                .givenAmount(plan.getGivenAmount())
-                .totalAmount(plan.getTotalAmount())
-                .startDate(startDate)
-                .endDate(startDate.plusDays(100))
-                .status(LoanStatus.ACTIVE)
+                .totalDays(plan.getDuration())
+                .remainingDays(plan.getDuration())
+                .startDate(LocalDate.now())
+                .status("ACTIVE")
+                .dueAmount(BigDecimal.ZERO)
+                .fineAmount(BigDecimal.ZERO)
                 .build();
 
         Loan savedLoan = loanRepository.save(loan);
 
+        // 🔥 4️⃣ CALL FUND SERVICE
+        callFundService(disbursed, savedLoan.getLoanId());
+
+        // 🔥 5️⃣ CALL TRANSACTION SERVICE
+        callTransactionService(
+                savedLoan.getLoanId(),
+                customerId,
+                disbursed
+        );
+
         return mapToResponse(savedLoan);
     }
 
+    // 🔥 FUND SERVICE CALL
+    private void callFundService(BigDecimal amount, Long loanId) {
+
+        FundRequestDTO request = new FundRequestDTO();
+        request.setAmount(amount);
+        request.setReferenceId(loanId);
+
+        restTemplate.postForObject(
+                "http://fund-service/fund/loan",
+                request,
+                String.class
+        );
+    }
+
+    // 🔥 GET LOAN
     @Override
     public LoanResponseDTO getLoan(Long id) {
 
         Loan loan = loanRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
 
         return mapToResponse(loan);
     }
 
+    // 🔥 GET ALL LOANS
     @Override
     public List<LoanResponseDTO> getAllLoans() {
 
         return loanRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    // 🔥 GET BY CUSTOMER
+    @Override
+    public List<LoanResponseDTO> getLoansByCustomerId(Long customerId) {
+
+        return loanRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    // 🔥 UPDATE STATUS
     @Override
     public void updateLoanStatus(Long loanId, String status, String remarks) {
 
         Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new ResourceNotFoundException("Loan not found"));
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
 
-        LoanStatus loanStatus = LoanStatus.valueOf(status.toUpperCase());
-
-        loan.setStatus(loanStatus);
+        loan.setStatus(status);
 
         loanRepository.save(loan);
     }
 
     @Override
-    public List<LoanResponseDTO> getLoansByCustomerId(Long customerId) {
+    public void updateAfterPayment(Long loanId,
+                                   BigDecimal paid,
+                                   BigDecimal due,
+                                   BigDecimal fine) {
 
-        List<Loan> loans = loanRepository.findByCustomerId(customerId);
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new RuntimeException("Loan not found"));
 
-        if (loans.isEmpty()) {
-            throw new ResourceNotFoundException("No loans found for this customer");
+        // 🔥 1. CALCULATE NEW REMAINING
+        BigDecimal newRemaining = loan.getRemainingAmount().subtract(paid);
+
+        // prevent negative
+        if (newRemaining.compareTo(BigDecimal.ZERO) < 0) {
+            newRemaining = BigDecimal.ZERO;
         }
 
-        return loans.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
-    }
+        loan.setRemainingAmount(newRemaining);
 
-    @Override
-    public List<LoanResponseDTO> getLoansByStatus(String status) {
+        // 🔥 2. UPDATE DUE + FINE
+        loan.setDueAmount(due);
+        loan.setFineAmount(fine);
 
-        LoanStatus loanStatus = LoanStatus.valueOf(status.toUpperCase());
+        // 🔥 3. REDUCE DAYS
+        loan.setRemainingDays(loan.getRemainingDays() - 1);
 
-        List<Loan> loans = loanRepository.findByStatus(loanStatus);
-
-        if (loans.isEmpty()) {
-            throw new ResourceNotFoundException("No loans found with this status");
+        // 🔥 4. STATUS LOGIC (FIXED)
+        if (newRemaining.compareTo(BigDecimal.ZERO) == 0) {
+            loan.setStatus("CLOSED");
+        } else {
+            loan.setStatus("ACTIVE");
         }
 
-        return loans.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        loanRepository.save(loan);
+
+        System.out.println("💰 Payment applied → Loan updated");
     }
 
+    // 🔥 MAPPING METHOD
     private LoanResponseDTO mapToResponse(Loan loan) {
 
-        LoanResponseDTO response = new LoanResponseDTO();
+        LoanResponseDTO res = new LoanResponseDTO();
 
-        response.setLoanId(loan.getLoanId());
-        response.setCustomerName(loan.getCustomerName());
-        response.setPlanName(loan.getPlanName());
-        response.setTotalAmount(loan.getTotalAmount());
-        response.setAdvance(loan.getAdvance());
-        response.setGivenAmount(loan.getGivenAmount());
-        response.setDailyEmi(loan.getDailyEmi());
-        response.setDays(loan.getDays());
-        response.setStartDate(loan.getStartDate());
-        response.setEndDate(loan.getEndDate());
-        response.setStatus(loan.getStatus());
+        res.setLoanId(loan.getLoanId());
+        res.setCustomerId(loan.getCustomerId());
+        res.setPlanId(loan.getPlanId());
+        res.setPlanAmount(loan.getPlanAmount());
+        res.setDisbursedAmount(loan.getDisbursedAmount());
+        res.setRemainingAmount(loan.getRemainingAmount());
+        res.setDailyEmi(loan.getDailyEmi());
+        res.setTotalDays(loan.getTotalDays());
+        res.setRemainingDays(loan.getRemainingDays());
+        res.setStartDate(loan.getStartDate());
+        res.setStatus(loan.getStatus());
+        res.setDueAmount(loan.getDueAmount());
+        res.setFineAmount(loan.getFineAmount());
 
+        return res;
+    }
+    private void callTransactionService(Long loanId,
+                                        Long customerId,
+                                        BigDecimal amount) {
 
-        return response;
+        TransactionRequestDTO tx = new TransactionRequestDTO(
+                loanId,
+                customerId,
+                amount,
+                "LOAN_DISBURSE",
+                "DEBIT"
+        );
+
+        restTemplate.postForObject(
+                "http://transaction-service/transactions",
+                tx,
+                String.class
+        );
+
+    }
+    @Override
+    public List<LoanResponseDTO> getLoansByUserId(Long userId) {
+
+        // 1️⃣ Call customer-service
+        String url = "http://customer-service/customers/user/" + userId;
+
+        Map customer = restTemplate.getForObject(url, Map.class);
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
+        }
+
+        Long customerId = Long.valueOf(customer.get("id").toString());
+
+        // 2️⃣ Fetch loans using customerId
+        return loanRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }

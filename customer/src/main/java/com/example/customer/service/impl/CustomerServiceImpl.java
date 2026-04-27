@@ -23,8 +23,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer createCustomer(CustomerDTO dto, Long authUserId) {
 
-        if (repository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Customer already exists");
+        if (repository.existsByAuthUserId(authUserId)) {
+            throw new RuntimeException("Customer already exists for this user");
         }
 
         Customer customer = new Customer();
@@ -68,6 +68,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         response.setId(customer.getId());
         response.setUserType(customer.getUserType().name());
+
+        response.setFirstName(customer.getFirstName());
+        response.setLastName(customer.getLastName());
 
         // EMPLOYEE
         if (customer.getUserType() == UserType.EMPLOYEE) {
@@ -122,5 +125,18 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setState(dto.getState());
         customer.setPincode(dto.getPincode());
         customer.setUserType(UserType.valueOf(dto.getUserType().toUpperCase()));
+    }
+
+    public CustomerResponse getCustomerByUserId(Long userId) {
+
+        Customer customer = repository.findByAuthUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        return getCustomerById(customer.getId()); // reuse existing method
+    }
+    @Override
+    public Customer findByUserId(Long userId) {
+        return repository.findByAuthUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 }

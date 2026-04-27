@@ -1,22 +1,20 @@
 package com.uniquehire.paymentservice.service.impl;
 
-import com.uniquehire.paymentservice.dtos.Request.*;
-import com.uniquehire.paymentservice.dtos.Response.PaymentResponse;
-import com.uniquehire.paymentservice.entity.Fine;
+import com.uniquehire.paymentservice.dtos.Request.FundRequestDTO;
+import com.uniquehire.paymentservice.dtos.Request.PaymentRequestDTO;
+import com.uniquehire.paymentservice.dtos.Response.Customer;
+import com.uniquehire.paymentservice.dtos.Response.LoanResponseDTO;
+import com.uniquehire.paymentservice.dtos.Response.PaymentResponseDTO;
+import com.uniquehire.paymentservice.dtos.Request.TransactionRequestDTO;
 import com.uniquehire.paymentservice.entity.Payment;
-import com.uniquehire.paymentservice.enums.FineStatus;
-import com.uniquehire.paymentservice.enums.PaymentStatus;
-import com.uniquehire.paymentservice.repository.FineRepository;
 import com.uniquehire.paymentservice.repository.PaymentRepository;
 import com.uniquehire.paymentservice.service.PaymentService;
-import com.uniquehire.paymentservice.utils.OtpUtil;
-import com.uniquehire.paymentservice.utils.PaymentCalculationUtil;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,160 +22,175 @@ import java.util.List;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final FineRepository fineRepository;
-    private final OtpUtil otpUtil;
+    private final RestTemplate restTemplate;
 
-    // 🔹 Dummy loan data (replace with LoanService later)
-    private BigDecimal getLoanAmount(Long loanId) {
-        return BigDecimal.valueOf(10000);
-    }
-
-    // ✅ PAY EMI
     @Override
-    public PaymentResponse payEmi(Long loanId, PaymentRequest req) {
+    public PaymentResponseDTO makePayment(Long userId, PaymentRequestDTO request) {
 
-        BigDecimal loanAmount = getLoanAmount(loanId);
-        BigDecimal emi = PaymentCalculationUtil.calculateEmi(loanAmount);
-        BigDecimal paid = req.getPaidAmount();
+        // 🔥 1️⃣ GET CUSTOMER ID FROM USER
+        Long customerId = getCustomerId(userId);
 
-        BigDecimal due = BigDecimal.ZERO;
-        BigDecimal fine = BigDecimal.ZERO;
-        int days = 0;
+        // 🔥 2️⃣ GET LOAN
+        LoanResponseDTO loan = restTemplate.getForObject(
+                "http://loan-service/loans/" + request.getLoanId(),
+                LoanResponseDTO.class
+        );
 
-        // 🔥 EMI LOGIC
-        if (paid.compareTo(emi) < 0) {
-            due = emi.subtract(paid);
-            fine = PaymentCalculationUtil.calculateFine(emi);
-        } else if (paid.compareTo(emi) == 0) {
-            days = 1;
-        } else {
-            days = PaymentCalculationUtil.calculateDays(paid, emi);
+        if (loan == null) {
+            throw new RuntimeException("Loan not found");
+        }
 
-            BigDecimal remainder = paid.remainder(emi);
-            if (remainder.compareTo(BigDecimal.ZERO) > 0) {
-                due = emi.subtract(remainder);
-                fine = PaymentCalculationUtil.calculateFine(emi);
+        // 🔐 SECURITY CHECK
+        if (!loan.getCustomerId().equals(customerId)) {
+            throw new RuntimeException("Unauthorized payment");
+        }
+
+        BigDecimal paid = request.getAmount();
+        BigDecimal dailyEmi = loan.getDailyEmi();
+
+        BigDecimal due = loan.getDueAmount() == null ? BigDecimal.ZERO : loan.getDueAmount();
+        BigDecimal fine = loan.getFineAmount() == null ? BigDecimal.ZERO : loan.getFineAmount();
+
+        String type = "EMI";
+
+        // 🔥 PARTIAL
+        if (paid.compareTo(dailyEmi) < 0) {
+
+            BigDecimal remaining = dailyEmi.subtract(paid);
+            due = due.add(remaining);
+
+            BigDecimal penalty = dailyEmi.multiply(BigDecimal.valueOf(0.01));
+            fine = fine.add(penalty);
+
+            type = "PARTIAL";
+        }
+
+        // 🔥 ADVANCE
+        else if (paid.compareTo(dailyEmi) > 0) {
+
+            BigDecimal extra = paid.subtract(dailyEmi);
+
+            if (due.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal used = extra.min(due);
+                due = due.subtract(used);
+                extra = extra.subtract(used);
             }
+
+            if (extra.compareTo(BigDecimal.ZERO) > 0 && fine.compareTo(BigDecimal.ZERO) > 0) {
+                BigDecimal used = extra.min(fine);
+                fine = fine.subtract(used);
+                extra = extra.subtract(used);
+            }
+
+            type = "ADVANCE";
         }
 
-        Payment payment = new Payment();
-        payment.setLoanId(loanId);
-        payment.setPaymentDate(req.getPaymentDate());
-        payment.setEmiAmount(emi);
-        payment.setPaidAmount(paid);
-        payment.setDueAmount(due);
-        payment.setFineAmount(fine);
-        payment.setDaysCovered(days);
-        payment.setNextEmiDate(LocalDate.now().plusDays(days));
-        payment.setPaymentMethod(req.getPaymentMethod());
-        payment.setUpiId(req.getUpiId());
-        payment.setStatus(due.compareTo(BigDecimal.ZERO) > 0
-                ? PaymentStatus.PENDING
-                : PaymentStatus.COMPLETED);
+        // 🔥 FUND SERVICE
+        callFundService(paid, request.getLoanId());
 
-        // ✅ Fine mapping
-        if (fine.compareTo(BigDecimal.ZERO) > 0) {
-            Fine f = new Fine();
-            f.setLoanId(loanId);
-            f.setFineAmount(fine);
-            f.setReason("Late/Partial Payment");
-            f.setDate(LocalDate.now());
-            f.setStatus(FineStatus.PENDING);
-            f.setPayment(payment);
+        // 🔥 UPDATE LOAN
+        restTemplate.put(
+                "http://loan-service/loans/update-payment?loanId="
+                        + request.getLoanId()
+                        + "&paid=" + paid
+                        + "&due=" + due
+                        + "&fine=" + fine,
+                null
+        );
 
-            payment.getFines().add(f);
+        // 🔥 SAVE PAYMENT
+        Payment payment = Payment.builder()
+                .loanId(request.getLoanId())
+                .customerId(customerId)
+                .amount(paid)
+                .type(type)
+                .status("SUCCESS")
+                .paymentDate(LocalDateTime.now())
+                .build();
+
+        Payment saved = paymentRepository.save(payment);
+
+        // 🔥 TRANSACTION SERVICE
+        callTransactionService(
+                request.getLoanId(),
+                customerId,
+                paid,
+                type
+        );
+
+        return mapToResponse(saved);
+    }
+
+    // 🔥 GET CUSTOMER ID FROM CUSTOMER SERVICE
+    private Long getCustomerId(Long userId) {
+
+        Customer customer = restTemplate.getForObject(
+                "http://customer-service/customers/user/" + userId,
+                Customer.class
+        );
+
+        if (customer == null) {
+            throw new RuntimeException("Customer not found");
         }
 
-        paymentRepository.save(payment);
-
-        return mapToResponse(payment);
+        return customer.getId();
     }
 
-    // 🔐 SEND OTP
-    @Override
-    public String sendOtp(Long paymentId, String email) {
+    // 🔧 FUND CALL
+    private void callFundService(BigDecimal amount, Long loanId) {
 
-        String otp = otpUtil.generateOtp(paymentId);
+        FundRequestDTO req = new FundRequestDTO();
+        req.setAmount(amount);
+        req.setReferenceId(loanId);
 
-        // Simulated email
-        System.out.println("OTP sent to " + email + " : " + otp);
-
-        return "OTP sent successfully";
+        restTemplate.postForObject(
+                "http://fund-service/fund/emi",
+                req,
+                String.class
+        );
     }
 
-    // 🔐 VERIFY OTP
-    @Override
-    public PaymentResponse verifyOtp(OtpVerifyRequest req) {
+    // 🔧 TRANSACTION CALL
+    private void callTransactionService(Long loanId,
+                                        Long customerId,
+                                        BigDecimal amount,
+                                        String type) {
 
-        Payment payment = paymentRepository.findById(req.getPaymentId())
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+        TransactionRequestDTO tx = new TransactionRequestDTO(
+                loanId,
+                customerId,
+                amount,
+                type,
+                "CREDIT"
+        );
 
-        boolean valid = otpUtil.verifyOtp(req.getPaymentId(), req.getOtp());
-
-        if (!valid) {
-            throw new RuntimeException("Invalid OTP");
-        }
-
-        payment.setStatus(PaymentStatus.COMPLETED);
-        paymentRepository.save(payment);
-
-        return mapToResponse(payment);
+        restTemplate.postForObject(
+                "http://transaction-service/transactions",
+                tx,
+                String.class
+        );
     }
 
-    // 🔥 PAY DUE
-    @Override
-    public PaymentResponse payDue(PayDueRequest req) {
+    private PaymentResponseDTO mapToResponse(Payment payment) {
 
-        List<Payment> pendingPayments =
-                paymentRepository.findByLoanIdAndStatus(
-                        req.getLoanId(), PaymentStatus.PENDING);
-
-        BigDecimal totalDue = pendingPayments.stream()
-                .map(Payment::getDueAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (req.getAmountPaid().compareTo(totalDue) < 0) {
-            throw new RuntimeException("Please pay full due amount");
-        }
-
-        pendingPayments.forEach(p -> {
-            p.setDueAmount(BigDecimal.ZERO);
-            p.setStatus(PaymentStatus.COMPLETED);
-        });
-
-        paymentRepository.saveAll(pendingPayments);
-
-        return mapToResponse(pendingPayments.get(0));
-    }
-
-    // 📄 GET PAYMENTS
-    @Override
-    public List<PaymentResponse> getPayments(Long loanId) {
-
-        List<Payment> payments = paymentRepository.findByLoanId(loanId);
-
-        return payments.stream()
-                .map(this::mapToResponse)   // ✅ FIXED .map ERROR
-                .toList();
-    }
-
-    // ✅ MAPPER (VERY IMPORTANT - fixes your error)
-    private PaymentResponse mapToResponse(Payment payment) {
-
-        PaymentResponse res = new PaymentResponse();
+        PaymentResponseDTO res = new PaymentResponseDTO();
 
         res.setPaymentId(payment.getPaymentId());
         res.setLoanId(payment.getLoanId());
-        res.setPaymentDate(payment.getPaymentDate());
-        res.setEmiAmount(payment.getEmiAmount());
-        res.setPaidAmount(payment.getPaidAmount());
-        res.setDueAmount(payment.getDueAmount());
-        res.setFineAmount(payment.getFineAmount());
-        res.setDaysCovered(payment.getDaysCovered());
-        res.setNextEmiDate(payment.getNextEmiDate());
-//        res.setPaymentMethod(payment.getPaymentMethod());
+        res.setCustomerId(payment.getCustomerId());
+        res.setAmount(payment.getAmount());
+        res.setType(payment.getType());
         res.setStatus(payment.getStatus());
+        res.setPaymentDate(payment.getPaymentDate());
 
         return res;
+    }
+
+    @Override
+    public List<PaymentResponseDTO> getPayments(Long loanId) {
+        return paymentRepository.findByLoanId(loanId)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 }

@@ -23,17 +23,21 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        if (customer.getUserType() != UserType.EMPLOYEE) {
-            throw new RuntimeException("Customer is not an employee");
+        // 🔥 Prevent duplicate employee details
+        if (customer.getEmployeeDetails() != null) {
+            throw new RuntimeException("Employee details already exist");
         }
 
         EmployeeDetails emp = new EmployeeDetails();
+
         emp.setEmpId(dto.getEmpId());
         emp.setCompanyName(dto.getCompanyName());
-        emp.setCtc(dto.getCtc());
         emp.setMonthlySalary(dto.getMonthlySalary());
         emp.setExperience(dto.getExperience());
+
+        // 🔥 VERY IMPORTANT (BOTH SIDES)
         emp.setCustomer(customer);
+        customer.setEmployeeDetails(emp);
 
         return employeeRepository.save(emp);
     }

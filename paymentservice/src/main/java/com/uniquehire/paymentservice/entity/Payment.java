@@ -1,61 +1,30 @@
 package com.uniquehire.paymentservice.entity;
 
-import com.uniquehire.paymentservice.enums.PaymentMethod;
-import com.uniquehire.paymentservice.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
 @Table(name = "payments")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Payment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
-    @Column(nullable = false)
     private Long loanId;
+    private Long customerId;
 
-    @Column(nullable = false)
-    private LocalDate paymentDate;
+    private BigDecimal amount;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal emiAmount;
+    private String type; // EMI / PENALTY
+    private String status; // SUCCESS / FAILED
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal paidAmount;
-
-    @Column(nullable = false,precision = 10,scale = 2)
-    private BigDecimal dueAmount;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal fineAmount;
-
-    @Column(nullable = false)
-    private int daysCovered;
-
-    @Column(nullable = false)
-    private LocalDate nextEmiDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PaymentStatus status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PaymentMethod paymentMethod;
-
-   private String upiId;
-
-    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
-    private List<Fine> fines =new ArrayList<>();
+    private LocalDateTime paymentDate;
 }

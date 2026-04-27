@@ -48,4 +48,14 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return service.getAllCustomers();
     }
+    @GetMapping("/me")
+    public CustomerResponse getMyProfile(
+            @RequestHeader("X-USER-ID") Long userId) {
+
+        return service.getCustomerByUserId(userId);
+    }
+    @GetMapping("/user/{userId}")
+    public CustomerResponse getByUserId(@PathVariable Long userId) {
+        return service.getCustomerByUserId(userId);
+    }
 }

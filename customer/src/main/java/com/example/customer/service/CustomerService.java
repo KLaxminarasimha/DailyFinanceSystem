@@ -18,4 +18,7 @@ public interface CustomerService {
     CustomerResponse getCustomerById(Long id);
 
     List<Customer> getAllCustomers();
+
+    CustomerResponse getCustomerByUserId(Long userId);
+    Customer findByUserId(Long userId);
 }
