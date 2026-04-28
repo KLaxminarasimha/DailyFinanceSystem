@@ -2,55 +2,66 @@ package com.dailyfinance.api_gateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.cloud.gateway.filter.*;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtGatewayFilter implements GlobalFilter {
 
-    private final String SECRET = "my-super-secret-key-12345678901234567890"; // 🔥 same as auth-service
+    private final String SECRET = "my-super-secret-key-12345678901234567890";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String path = exchange.getRequest().getURI().getPath();
+        ServerHttpRequest request = exchange.getRequest();
+        String path = request.getURI().getPath();
 
-        // 🔓 Skip auth endpoints
-        if (path.contains("/api/v1/auth") || path.contains("/api/v1/customer")) {
+        // ✅ Allow preflight
+        if (request.getMethod() == HttpMethod.OPTIONS) {
             return chain.filter(exchange);
         }
 
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        // ✅ PUBLIC ENDPOINTS
+        if (path.startsWith("/api/v1/auth") ||
+                path.startsWith("/api/v1/customer")) {
+            return chain.filter(exchange);
+        }
+
+        // 🔒 PROTECTED
+        String authHeader = request.getHeaders().getFirst("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return chain.filter(exchange);
+            return onError(exchange, HttpStatus.UNAUTHORIZED);
         }
-
-        String token = authHeader.substring(7);
 
         try {
+            String token = authHeader.substring(7);
+
             Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+                    .setSigningKey(SECRET.getBytes())
+                    .parseClaimsJws(token)
+                    .getBody();
 
-            Long userId = Long.valueOf(claims.get("userId").toString());
+            String userId = claims.get("userId").toString();
 
-            // 🔥 Inject X-USER-ID
-            ServerHttpRequest request = exchange.getRequest().mutate()
-                    .header("X-USER-ID", userId.toString())
+            ServerHttpRequest mutated = request.mutate()
+                    .header("X-USER-ID", userId)
                     .build();
 
-            return chain.filter(exchange.mutate().request(request).build());
+            return chain.filter(exchange.mutate().request(mutated).build());
 
         } catch (Exception e) {
-            return chain.filter(exchange);
+            return onError(exchange, HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
+        exchange.getResponse().setStatusCode(status);
+        return exchange.getResponse().setComplete();
     }
 }

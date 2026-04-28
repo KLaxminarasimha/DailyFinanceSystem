@@ -135,7 +135,13 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        emailService.sendOtp(user.getEmail(), otp);
+        // 🔥 FIX HERE
+        try {
+            emailService.sendOtp(user.getEmail(), otp);
+        } catch (Exception e) {
+            System.out.println("EMAIL ERROR BUT CONTINUING...");
+            e.printStackTrace();
+        }
 
         return RegisterResponse.builder()
                 .userId(user.getId())
@@ -152,16 +158,24 @@ public class AuthServiceImpl implements AuthService {
     public void verifyOtp(VerifyOtpRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.getOtp() == null || !user.getOtp().equals(request.getOtp())) {
-            throw new BadRequestException("Invalid OTP");
+        // ✅ if already verified → just return
+        if (user.isVerified()) {
+            return;
         }
 
+        // ❌ check OTP
+        if (!user.getOtp().equals(request.getOtp())) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        // ❌ check expiry
         if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("OTP expired");
+            throw new RuntimeException("OTP expired");
         }
 
+        // ✅ SUCCESS FLOW
         user.setVerified(true);
         user.setOtp(null);
         user.setOtpExpiry(null);
