@@ -5,68 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/dailyfinance/api_gateway/config/CorsConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
-=======
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerDetailsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/KycDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/OtpDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/BusinessRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/EmployeeRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/BusinessDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/CustomerServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmailServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/EmployeeDetailsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/impl/KycServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/customer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/common/validation/ValidationUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/BusinessDetailsController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/CustomerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/EmployeeDetailsController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/GuarantorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/KycController.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/controller/KycController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDetailsRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/BusinessDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CreateCustomerRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CreateGuarantorRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/CustomerResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/EmployeeDetailsRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/dto/GuarantorResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/BusinessDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Customer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/EmployeeDetails.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/KycDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/entity/Kyc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/BusinessDetailsMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/CustomerMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/EmployeeDetailsMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/GuarantorMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/mapper/KycMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/BusinessDetailsRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/CustomerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/EmployeeDetailsRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/GuarantorRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/KycRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/repository/KycRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/BusinessDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/BusinessDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/CustomerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmployeeDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/EmployeeDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/GuarantorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/GuarantorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/KycService.java" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/service/KycService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/BusinessDetailsServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/CustomerServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/EmployeeDetailsServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/GuarantorServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/customer/src/main/java/com/example/customer/serviceImpl/KycServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/customer/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/resources/application.properties" afterDir="false" />
->>>>>>> 42be1a6cbc43426a794f498bd33874e47f4f5f9f
+      <change beforePath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,11 +53,7 @@
 }</component>
   <component name="ProjectId" id="3C9Ufg2MZar89vG8ZePmqAVfStq" />
   <component name="ProjectLevelVcsManager">
-<<<<<<< HEAD
-    <ConfirmationsSetting value="1" id="Add" />
-=======
     <ConfirmationsSetting value="2" id="Add" />
->>>>>>> 42be1a6cbc43426a794f498bd33874e47f4f5f9f
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -120,52 +65,85 @@
     "Application.CustomerApplication.executor": "Run",
     "Application.LoanagentModuleApplication.executor": "Run",
     "Application.PlansModuleApplication.executor": "Run",
+    "Maven.LoanManagementSystem [clean,compile...].executor": "Run",
     "Maven.LoanManagementSystem [clean,install].executor": "Run",
     "Maven.LoanManagementSystem [clean,package...].executor": "Run",
+    "Maven.LoanManagementSystem [clean].executor": "Run",
+    "Maven.LoanManagementSystem [compile].executor": "Run",
+    "Maven.LoanManagementSystem [install].executor": "Run",
     "Maven.PlansModule [clean,compile,install].executor": "Run",
     "Maven.PlansModule [clean,compile].executor": "Run",
+    "Maven.api-gateway [clean,compile,install].executor": "Run",
+    "Maven.api-gateway [clean,install].executor": "Run",
     "Maven.auth-service [clean,compile,install].executor": "Run",
     "Maven.customer [clean,compile,install].executor": "Run",
+    "Maven.fund-service [clean,compile,install].executor": "Run",
     "Maven.loanagent-module [clean,compile,install].executor": "Run",
+    "Maven.paymentservice [clean,compile,install].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
     "Spring Boot.AuthServiceApplication.executor": "Run",
     "Spring Boot.CustomerApplication.executor": "Run",
+    "Spring Boot.FundServiceApplication.executor": "Run",
     "Spring Boot.LoanagentModuleApplication.executor": "Run",
+    "Spring Boot.PaymentserviceApplication.executor": "Run",
     "Spring Boot.PlansModuleApplication.executor": "Run",
+    "Spring Boot.TransactionReportService.executor": "Run",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-<<<<<<< HEAD
     "git-widget-placeholder": "TransactionReportService",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/business system/DailyFinanceSystem",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-=======
-    "git-widget-placeholder": "auth-module",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/business system/DailyFinanceSystem",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.0",
->>>>>>> 42be1a6cbc43426a794f498bd33874e47f4f5f9f
     "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-<<<<<<< HEAD
-  <component name="RunManager" selected="Application.CustomerApplication">
-=======
   <component name="RunManager">
->>>>>>> 42be1a6cbc43426a794f498bd33874e47f4f5f9f
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="auth-service" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="auth-service" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.dailyfinance.auth_service.AuthServiceApplication" />
-      <module name="auth-service" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.dailyfinance.auth_service.*" />
@@ -226,29 +204,6 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="auth-service" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="RUN_TOOL" value="" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="CustomerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UnknownPolicyInFreeMode" />
       <module name="customer" />
@@ -263,26 +218,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="auth-service" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="RUN_TOOL" value="" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.AuthServiceApplication" />
         <item itemvalue="Application.CustomerApplication" />
         <item itemvalue="Application.PlansModuleApplication" />
         <item itemvalue="Application.LoanagentModuleApplication" />
         <item itemvalue="Spring Boot.CustomerApplication" />
-        <item itemvalue="Application.AuthServiceApplication" />
       </list>
     </recent_temporary>
   </component>

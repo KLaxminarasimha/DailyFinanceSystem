@@ -1,6 +1,7 @@
 package com.example.customer.entity;
 
 import com.example.customer.enums.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long authUserId;
 
     private String firstName;
     private String lastName;
@@ -34,4 +34,17 @@ public class Customer {
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    // 🔥 ADD THESE (VERY IMPORTANT)
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private EmployeeDetails employeeDetails;
+
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private BusinessDetails businessDetails;
+
+    @Column(unique = true)
+    private Long authUserId;
 }

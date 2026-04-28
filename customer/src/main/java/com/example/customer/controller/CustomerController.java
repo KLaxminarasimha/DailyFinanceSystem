@@ -1,6 +1,7 @@
 package com.example.customer.controller;
 
 import com.example.customer.dto.CustomerDTO;
+import com.example.customer.dto.CustomerResponse;
 import com.example.customer.entity.Customer;
 import com.example.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -15,36 +16,46 @@ public class CustomerController {
 
     private final CustomerService service;
 
-    // CREATE
+    // ✅ CREATE
     @PostMapping("/profile")
     public Customer createCustomer(@RequestBody CustomerDTO dto,
                                    @RequestHeader("X-USER-ID") Long authUserId) {
         return service.createCustomer(dto, authUserId);
     }
 
-    // UPDATE
+    // ✅ UPDATE
     @PutMapping("/{id}")
     public Customer updateCustomer(@PathVariable Long id,
                                    @RequestBody CustomerDTO dto) {
         return service.updateCustomer(id, dto);
     }
 
-    // DELETE
+    // ✅ DELETE
     @DeleteMapping("/{id}")
     public String deleteCustomer(@PathVariable Long id) {
         service.deleteCustomer(id);
         return "Customer deleted successfully";
     }
 
-    // GET BY ID
+    // ✅ GET BY ID (FIXED)
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable Long id) {
+    public CustomerResponse getCustomerById(@PathVariable Long id) {
         return service.getCustomerById(id);
     }
 
-    // GET ALL
+    // ✅ GET ALL
     @GetMapping
     public List<Customer> getAllCustomers() {
         return service.getAllCustomers();
+    }
+    @GetMapping("/me")
+    public CustomerResponse getMyProfile(
+            @RequestHeader("X-USER-ID") Long userId) {
+
+        return service.getCustomerByUserId(userId);
+    }
+    @GetMapping("/user/{userId}")
+    public CustomerResponse getByUserId(@PathVariable Long userId) {
+        return service.getCustomerByUserId(userId);
     }
 }

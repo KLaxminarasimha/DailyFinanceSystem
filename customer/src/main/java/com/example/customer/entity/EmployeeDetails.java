@@ -1,7 +1,10 @@
 package com.example.customer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "employee_details")
@@ -16,11 +19,13 @@ public class EmployeeDetails {
 
     private String empId;
     private String companyName;
-    private Double ctc;
-    private Double monthlySalary;
+    private BigDecimal monthlySalary;
     private Integer experience;
+    private BigDecimal ctc;
 
+    // ✅ FIX HERE
     @OneToOne
     @JoinColumn(name = "customer_id", nullable = false, unique = true)
+    @JsonIgnore
     private Customer customer;
 }

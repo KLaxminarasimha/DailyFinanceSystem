@@ -21,4 +21,6 @@ public interface AuthService {
     RegisterResponse registerCustomer(CustomerRegisterRequest request);
 
     void verifyOtp(VerifyOtpRequest request);
+
+    void resendOtp(String email);
 }

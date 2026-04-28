@@ -1,23 +1,11 @@
 package com.uniquehire.plansmodule.service;
 
-
-
-import com.uniquehire.plansmodule.dto.request.CreatePlanRequest;
-import com.uniquehire.plansmodule.dto.response.EligibilityResponse;
-import com.uniquehire.plansmodule.dto.response.PlanResponse;
-
+import com.uniquehire.plansmodule.dto.PlanResponse;
 import java.util.List;
 
 public interface PlanService {
 
-    PlanResponse createPlan(CreatePlanRequest request);
+    PlanResponse getPlanById(Long id);
 
-    List<PlanResponse> getAllPlans(String status);
-
-    EligibilityResponse getEligiblePlans(Long customerId);
-
-    PlanResponse selectEligiblePlan(Long customerId, Long planId);
-
-    PlanResponse getPlanById(Long planId);
-
+    List<PlanResponse> getEligiblePlans(Long userId); // 🔥 important
 }

@@ -3,20 +3,29 @@ package com.uniquehire.loanagentmodule.service;
 import com.uniquehire.loanagentmodule.dto.Request.LoanRequestDTO;
 import com.uniquehire.loanagentmodule.dto.Response.LoanResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface LoanService {
 
-    LoanResponseDTO createLoan(Long customerid,Long planid);
+    // 🔥 Create Loan
+    LoanResponseDTO createLoan(Long customerId, Long planId);
 
-    LoanResponseDTO getLoan(Long id);
+    // 🔥 Get single loan
+    LoanResponseDTO getLoan(Long loanId);
 
+    // 🔥 Get all loans
     List<LoanResponseDTO> getAllLoans();
 
-    void updateLoanStatus(Long loanId, String status, String remarks);
-
+    // 🔥 Get loans by customer
     List<LoanResponseDTO> getLoansByCustomerId(Long customerId);
 
-    List<LoanResponseDTO> getLoansByStatus(String status);
+    // 🔥 Update status (APPROVED / REJECTED / CLOSED)
+    void updateLoanStatus(Long loanId, String status, String remarks);
 
+    void updateAfterPayment(Long loanId,
+                            BigDecimal paid,
+                            BigDecimal due,
+                            BigDecimal fine);
+    List<LoanResponseDTO> getLoansByUserId(Long userId);
 }
