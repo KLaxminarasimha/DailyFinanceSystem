@@ -4,7 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="" />
+    <list default="true" id="5afc64f4-209e-4421-85c9-946649c6f95f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/dailyfinance/api_gateway/config/CorsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/PlansModule/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/TransactionAndReport/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/customer/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/customer/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/fund-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/loanagent-module/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/paymentservice/src/main/resources/application.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,6 +68,9 @@
     "Maven.LoanManagementSystem [clean,compile...].executor": "Run",
     "Maven.LoanManagementSystem [clean,install].executor": "Run",
     "Maven.LoanManagementSystem [clean,package...].executor": "Run",
+    "Maven.LoanManagementSystem [clean].executor": "Run",
+    "Maven.LoanManagementSystem [compile].executor": "Run",
+    "Maven.LoanManagementSystem [install].executor": "Run",
     "Maven.PlansModule [clean,compile,install].executor": "Run",
     "Maven.PlansModule [clean,compile].executor": "Run",
     "Maven.api-gateway [clean,compile,install].executor": "Run",
@@ -70,7 +85,6 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ApiGatewayApplication.executor": "Run",
     "Spring Boot.AuthServiceApplication.executor": "Run",
     "Spring Boot.CustomerApplication.executor": "Run",
@@ -91,7 +105,7 @@
     "to.speed.mode.migration.done": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.AuthServiceApplication">
+  <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="auth-service" />
       <option name="ENV_FILES" value="" />
@@ -130,7 +144,6 @@
     </configuration>
     <configuration name="AuthServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.dailyfinance.auth_service.AuthServiceApplication" />
-      <module name="auth-service" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.dailyfinance.auth_service.*" />
@@ -207,11 +220,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.AuthServiceApplication" />
         <item itemvalue="Application.CustomerApplication" />
         <item itemvalue="Application.PlansModuleApplication" />
         <item itemvalue="Application.LoanagentModuleApplication" />
         <item itemvalue="Spring Boot.CustomerApplication" />
-        <item itemvalue="Application.AuthServiceApplication" />
       </list>
     </recent_temporary>
   </component>
