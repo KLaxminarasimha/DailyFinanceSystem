@@ -18,13 +18,13 @@ public class BusinessDetailsServiceImpl implements BusinessDetailsService {
     private final BusinessRepository businessRepository;
 
     @Override
-    public BusinessDetails addBusiness(Long customerId, BusinessDTO dto) {
+    public BusinessDetails addBusinessByUserId(Long userId, BusinessDTO dto) {
 
-        Customer customer = customerRepository.findById(customerId)
+        Customer customer = customerRepository.findByAuthUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         if (customer.getUserType() != UserType.BUSINESS) {
-            throw new RuntimeException("Customer is not a business user");
+            throw new RuntimeException("Not a business user");
         }
 
         BusinessDetails business = new BusinessDetails();

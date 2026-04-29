@@ -5,5 +5,5 @@ import com.example.customer.entity.EmployeeDetails;
 
 public interface EmployeeDetailsService {
 
-    EmployeeDetails addEmployee(Long customerId, EmployeeDTO dto);
+    public EmployeeDetails addEmployeeByUserId(Long userId, EmployeeDTO dto);
 }

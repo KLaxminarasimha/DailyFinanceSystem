@@ -18,8 +18,16 @@ public class CustomerController {
 
     // ✅ CREATE
     @PostMapping("/profile")
-    public Customer createCustomer(@RequestBody CustomerDTO dto,
-                                   @RequestHeader("X-USER-ID") Long authUserId) {
+    public Customer createCustomer(
+            @RequestBody CustomerDTO dto,
+            @RequestHeader(value = "X-USER-ID", required = false) Long authUserId) {
+
+        System.out.println("USER ID: " + authUserId);
+
+        if (authUserId == null) {
+            throw new RuntimeException("USER ID NOT RECEIVED FROM GATEWAY");
+        }
+
         return service.createCustomer(dto, authUserId);
     }
 
@@ -48,12 +56,18 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return service.getAllCustomers();
     }
+
+
     @GetMapping("/me")
     public CustomerResponse getMyProfile(
             @RequestHeader("X-USER-ID") Long userId) {
 
+        System.out.println("USER ID FROM HEADER: " + userId); // 🔥 IMPORTANT
+
         return service.getCustomerByUserId(userId);
     }
+
+
     @GetMapping("/user/{userId}")
     public CustomerResponse getByUserId(@PathVariable Long userId) {
         return service.getCustomerByUserId(userId);

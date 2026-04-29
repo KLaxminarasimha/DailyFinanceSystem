@@ -27,7 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDTO makePayment(Long userId, PaymentRequestDTO request) {
 
-        // 🔥 1️⃣ GET CUSTOMER ID FROM USER
+        // 🔥 1️⃣ GET CUSTOMER ID
         Long customerId = getCustomerId(userId);
 
         // 🔥 2️⃣ GET LOAN
@@ -40,7 +40,6 @@ public class PaymentServiceImpl implements PaymentService {
             throw new RuntimeException("Loan not found");
         }
 
-        // 🔐 SECURITY CHECK
         if (!loan.getCustomerId().equals(customerId)) {
             throw new RuntimeException("Unauthorized payment");
         }
@@ -53,42 +52,48 @@ public class PaymentServiceImpl implements PaymentService {
 
         String type = "EMI";
 
-        // 🔥 PARTIAL
+        // 🔴 PARTIAL PAYMENT
         if (paid.compareTo(dailyEmi) < 0) {
 
             BigDecimal remaining = dailyEmi.subtract(paid);
             due = due.add(remaining);
 
+            // 🔥 1% fine
             BigDecimal penalty = dailyEmi.multiply(BigDecimal.valueOf(0.01));
             fine = fine.add(penalty);
 
             type = "PARTIAL";
         }
 
-        // 🔥 ADVANCE
+        // 🟢 ADVANCE PAYMENT
         else if (paid.compareTo(dailyEmi) > 0) {
 
             BigDecimal extra = paid.subtract(dailyEmi);
 
+            // 1️⃣ clear due
             if (due.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal used = extra.min(due);
                 due = due.subtract(used);
                 extra = extra.subtract(used);
             }
 
+            // 2️⃣ clear fine
             if (extra.compareTo(BigDecimal.ZERO) > 0 && fine.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal used = extra.min(fine);
                 fine = fine.subtract(used);
                 extra = extra.subtract(used);
             }
 
+            // 3️⃣ remaining extra will reduce principal (handled in loan-service)
             type = "ADVANCE";
         }
+
+        // 🟢 FULL EMI → nothing to change (type stays EMI)
 
         // 🔥 FUND SERVICE
         callFundService(paid, request.getLoanId());
 
-        // 🔥 UPDATE LOAN
+        // 🔥 UPDATE LOAN (IMPORTANT → remainingDays handled there)
         restTemplate.put(
                 "http://loan-service/loans/update-payment?loanId="
                         + request.getLoanId()
@@ -121,7 +126,7 @@ public class PaymentServiceImpl implements PaymentService {
         return mapToResponse(saved);
     }
 
-    // 🔥 GET CUSTOMER ID FROM CUSTOMER SERVICE
+    // 🔥 GET CUSTOMER ID
     private Long getCustomerId(Long userId) {
 
         Customer customer = restTemplate.getForObject(

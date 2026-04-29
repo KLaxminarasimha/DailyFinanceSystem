@@ -19,49 +19,28 @@ public class JwtGatewayFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         ServerHttpRequest request = exchange.getRequest();
-        String path = request.getURI().getPath();
 
-        // ✅ Allow preflight
-        if (request.getMethod() == HttpMethod.OPTIONS) {
+        if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
             return chain.filter(exchange);
         }
 
-        // ✅ PUBLIC ENDPOINTS
-        if (path.startsWith("/api/v1/auth") ||
-                path.startsWith("/api/v1/customer")) {
-            return chain.filter(exchange);
-        }
+        String token = request.getHeaders()
+                .getFirst(HttpHeaders.AUTHORIZATION)
+                .replace("Bearer ", "");
 
-        // 🔒 PROTECTED
-        String authHeader = request.getHeaders().getFirst("Authorization");
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return onError(exchange, HttpStatus.UNAUTHORIZED);
-        }
+        // 🔥 FIX HERE
+        Long userId = claims.get("userId", Long.class);
 
-        try {
-            String token = authHeader.substring(7);
+        ServerHttpRequest mutated = request.mutate()
+                .header("X-USER-ID", String.valueOf(userId))
+                .build();
 
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET.getBytes())
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            String userId = claims.get("userId").toString();
-
-            ServerHttpRequest mutated = request.mutate()
-                    .header("X-USER-ID", userId)
-                    .build();
-
-            return chain.filter(exchange.mutate().request(mutated).build());
-
-        } catch (Exception e) {
-            return onError(exchange, HttpStatus.UNAUTHORIZED);
-        }
-    }
-
-    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
-        exchange.getResponse().setStatusCode(status);
-        return exchange.getResponse().setComplete();
+        return chain.filter(exchange.mutate().request(mutated).build());
     }
 }

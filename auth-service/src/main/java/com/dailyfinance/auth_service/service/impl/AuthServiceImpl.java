@@ -138,6 +138,7 @@ public class AuthServiceImpl implements AuthService {
         // 🔥 FIX HERE
         try {
             emailService.sendOtp(user.getEmail(), otp);
+//            System.out.println("OTP: " + otp);
         } catch (Exception e) {
             System.out.println("EMAIL ERROR BUT CONTINUING...");
             e.printStackTrace();

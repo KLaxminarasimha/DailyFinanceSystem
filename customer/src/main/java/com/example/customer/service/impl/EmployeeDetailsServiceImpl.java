@@ -18,9 +18,9 @@ public class EmployeeDetailsServiceImpl implements EmployeeDetailsService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public EmployeeDetails addEmployee(Long customerId, EmployeeDTO dto) {
+    public EmployeeDetails addEmployeeByUserId(Long userId, EmployeeDTO dto) {
 
-        Customer customer = customerRepository.findById(customerId)
+        Customer customer = customerRepository.findByAuthUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         // 🔥 Prevent duplicate employee details

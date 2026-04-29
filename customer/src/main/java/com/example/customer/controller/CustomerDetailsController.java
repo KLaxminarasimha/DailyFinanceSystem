@@ -18,16 +18,21 @@ public class CustomerDetailsController {
     private final BusinessDetailsService businessService;
 
     // ✅ Employee API
-    @PostMapping("/{id}/employee")
-    public EmployeeDetails addEmployee(@PathVariable Long id,
-                                       @RequestBody EmployeeDTO dto) {
-        return employeeService.addEmployee(id, dto);
+    @PostMapping("/employee")
+    public EmployeeDetails addEmployee(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestBody EmployeeDTO dto) {
+
+        return employeeService.addEmployeeByUserId(userId, dto);
     }
 
+
     // ✅ Business API
-    @PostMapping("/{id}/business")
-    public BusinessDetails addBusiness(@PathVariable Long id,
-                                       @RequestBody BusinessDTO dto) {
-        return businessService.addBusiness(id, dto);
+    @PostMapping("/business")
+    public BusinessDetails addBusiness(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestBody BusinessDTO dto
+    ) {
+        return businessService.addBusinessByUserId(userId, dto);
     }
 }

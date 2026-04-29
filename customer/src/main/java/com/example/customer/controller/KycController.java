@@ -14,14 +14,19 @@ public class KycController {
 
     private final KycService kycService;
 
-    @PostMapping("/{id}/kyc")
-    public Kyc submitKyc(@PathVariable Long id, @RequestBody KycDTO dto) {
-        return kycService.submitKyc(id, dto);
+    @PostMapping("/kyc")
+    public Kyc submitKyc(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestBody KycDTO dto
+    ) {
+        return kycService.submitKycByUserId(userId, dto);
     }
 
-    @PostMapping("/{id}/kyc/verify")
-    public String verifyOtp(@PathVariable Long id,
-                            @RequestBody OtpDTO dto) {
-        return kycService.verifyOtp(id, dto.getOtp());
+    @PostMapping("/kyc/verify")
+    public String verifyOtp(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestBody OtpDTO dto) {
+
+        return kycService.verifyOtpByUserId(userId, dto.getOtp());
     }
 }

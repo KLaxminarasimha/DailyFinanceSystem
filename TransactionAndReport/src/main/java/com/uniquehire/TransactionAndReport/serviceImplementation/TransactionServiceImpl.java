@@ -40,8 +40,14 @@ public class TransactionServiceImpl implements TransactionService {
     // 🔥 GET BY LOAN
     @Override
     public List<TransactionResponseDTO> getByLoan(Long loanId) {
-        return repository.findByReferenceId(loanId)
-                .stream()
+
+        List<Transaction> list = repository.findByReferenceId(loanId);
+
+        if (list == null || list.isEmpty()) {
+            return List.of(); // avoid null issues
+        }
+
+        return list.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -50,14 +56,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionSummaryDTO getSummary() {
 
-        BigDecimal totalCredit = repository.findAll().stream()
-                .filter(t -> "CREDIT".equals(t.getDirection()))
-                .map(Transaction::getAmount)
+        List<Transaction> all = repository.findAll();
+
+        BigDecimal totalCredit = all.stream()
+                .filter(t -> "CREDIT".equalsIgnoreCase(t.getDirection()))
+                .map(t -> t.getAmount() == null ? BigDecimal.ZERO : t.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalDebit = repository.findAll().stream()
-                .filter(t -> "DEBIT".equals(t.getDirection()))
-                .map(Transaction::getAmount)
+        BigDecimal totalDebit = all.stream()
+                .filter(t -> "DEBIT".equalsIgnoreCase(t.getDirection()))
+                .map(t -> t.getAmount() == null ? BigDecimal.ZERO : t.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         TransactionSummaryDTO summary = new TransactionSummaryDTO();
@@ -76,7 +84,7 @@ public class TransactionServiceImpl implements TransactionService {
         res.setTransactionId(tx.getTransactionId());
         res.setReferenceId(tx.getReferenceId());
         res.setCustomerId(tx.getCustomerId());
-        res.setAmount(tx.getAmount());
+        res.setAmount(tx.getAmount() == null ? BigDecimal.ZERO : tx.getAmount());
         res.setType(tx.getType());
         res.setDirection(tx.getDirection());
         res.setStatus(tx.getStatus());

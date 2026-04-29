@@ -23,14 +23,18 @@ public class KycServiceImpl implements KycService {
     private final EmailService emailService;
 
     @Override
-    public Kyc submitKyc(Long customerId, KycDTO dto) {
+    public Kyc submitKycByUserId(Long userId, KycDTO dto) {
 
-        Customer customer = customerRepository.findById(customerId)
+        Customer customer = customerRepository.findByAuthUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+        // Generate 6-digit OTP
+        String otp = String.valueOf(100000 + new Random().nextInt(900000));
 
-        Kyc kyc = new Kyc();
+        // If KYC already exists → update it
+        Kyc kyc = kycRepository.findByCustomer(customer)
+                .orElse(new Kyc());
+
         kyc.setAadhar(dto.getAadhar());
         kyc.setPan(dto.getPan());
         kyc.setEmail(dto.getEmail());
@@ -43,28 +47,38 @@ public class KycServiceImpl implements KycService {
         kyc.setKycStatus(KycStatus.PENDING);
         kyc.setCustomer(customer);
 
-        emailService.sendOtp(dto.getEmail(), otp); // for testing
+        // Send OTP
+        emailService.sendOtp(dto.getEmail(), otp);
 
         return kycRepository.save(kyc);
     }
 
     @Override
-    public String verifyOtp(Long customerId, String otp) {
+    public String verifyOtpByUserId(Long userId, String otp) {
 
-        Kyc kyc = kycRepository.findAll().stream()
-                .filter(k -> k.getCustomer().getId().equals(customerId))
-                .findFirst()
+        Customer customer = customerRepository.findByAuthUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        Kyc kyc = kycRepository.findByCustomer(customer)
                 .orElseThrow(() -> new RuntimeException("KYC not found"));
 
+        // ❌ Invalid OTP
         if (!kyc.getOtp().equals(otp)) {
             throw new RuntimeException("Invalid OTP");
         }
 
+        // ❌ Expired OTP
         if (kyc.getOtpExpiry().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("OTP expired");
         }
 
+        // ✅ Success
         kyc.setKycStatus(KycStatus.VERIFIED);
+
+        // Optional: clear OTP after success
+        kyc.setOtp(null);
+        kyc.setOtpExpiry(null);
+
         kycRepository.save(kyc);
 
         return "KYC Verified Successfully";

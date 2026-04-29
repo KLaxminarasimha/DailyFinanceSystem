@@ -13,9 +13,11 @@ public class GuarantorController {
 
     private final GuarantorService guarantorService;
 
-    @PostMapping("/{id}/guarantor")
-    public Guarantor addGuarantor(@PathVariable Long id,
-                                  @RequestBody GuarantorDTO dto) {
-        return guarantorService.addGuarantor(id, dto);
+    @PostMapping("/guarantor")
+    public Guarantor addGuarantor(
+            @RequestHeader("X-USER-ID") Long userId,
+            @RequestBody GuarantorDTO dto
+    ) {
+        return guarantorService.addGuarantorByUserId(userId, dto);
     }
 }
