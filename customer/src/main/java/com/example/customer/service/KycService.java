@@ -5,7 +5,7 @@ import com.example.customer.entity.Kyc;
 
 public interface KycService {
 
-        Kyc submitKyc(Long customerId, KycDTO dto);
+        Kyc submitKycByUserId(Long userId, KycDTO dto);
 
-        String verifyOtp(Long customerId, String otp);
+        String verifyOtpByUserId(Long userId, String otp);
 }

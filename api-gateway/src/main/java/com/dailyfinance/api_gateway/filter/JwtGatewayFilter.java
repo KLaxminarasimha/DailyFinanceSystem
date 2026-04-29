@@ -2,55 +2,45 @@ package com.dailyfinance.api_gateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.cloud.gateway.filter.*;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtGatewayFilter implements GlobalFilter {
 
-    private final String SECRET = "my-super-secret-key-12345678901234567890"; // 🔥 same as auth-service
+    private final String SECRET = "my-super-secret-key-12345678901234567890";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        String path = exchange.getRequest().getURI().getPath();
+        ServerHttpRequest request = exchange.getRequest();
 
-        // 🔓 Skip auth endpoints
-        if (path.contains("/api/v1/auth") || path.contains("/api/v1/customer")) {
+        if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
             return chain.filter(exchange);
         }
 
-        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+        String token = request.getHeaders()
+                .getFirst(HttpHeaders.AUTHORIZATION)
+                .replace("Bearer ", "");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return chain.filter(exchange);
-        }
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
-        String token = authHeader.substring(7);
+        // 🔥 FIX HERE
+        Long userId = claims.get("userId", Long.class);
 
-        try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
+        ServerHttpRequest mutated = request.mutate()
+                .header("X-USER-ID", String.valueOf(userId))
+                .build();
 
-            Long userId = Long.valueOf(claims.get("userId").toString());
-
-            // 🔥 Inject X-USER-ID
-            ServerHttpRequest request = exchange.getRequest().mutate()
-                    .header("X-USER-ID", userId.toString())
-                    .build();
-
-            return chain.filter(exchange.mutate().request(request).build());
-
-        } catch (Exception e) {
-            return chain.filter(exchange);
-        }
+        return chain.filter(exchange.mutate().request(mutated).build());
     }
 }

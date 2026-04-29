@@ -9,4 +9,5 @@ public class PaymentRequestDTO {
     private Long loanId;
     private BigDecimal amount;
 
+
 }

@@ -24,7 +24,8 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer createCustomer(CustomerDTO dto, Long authUserId) {
 
         if (repository.existsByAuthUserId(authUserId)) {
-            throw new RuntimeException("Customer already exists for this user");
+            return repository.findByAuthUserId(authUserId)
+                    .orElseThrow(() -> new RuntimeException("Customer not found"));
         }
 
         Customer customer = new Customer();
